@@ -1,12 +1,25 @@
 from flask import Flask, request, jsonify
 from compiler import compiler
+from mongoengine import Document, StringField, EmailField, connect, ValidationError
+from Authentication import Auth
 
 app = Flask(__name__)
+
 
 # In-memory storage for the example
 data_store = {
     "message": "Hello, World! Nice to see you :)"
 }
+
+# Configuration for MongoDB
+# app.config["MONGODB_SETTINGS"] = {
+#     'db': 'CodeQuanta',
+#     'host': '127.0.0.1',
+#     'port': 27017
+# }
+
+# Initialize MongoEngine
+connect(db='CodeQuanta', host='localhost', port=27017)
 
 
 # Testing purpose
@@ -14,6 +27,21 @@ data_store = {
 def get_data():
     return jsonify(data_store), 200
 
+#registration
+@app.route('/register',methods=['POST'])
+def reg():
+    data=request.json
+    val=Auth.register(data)
+    print(val)
+    return jsonify(val['message']),val['code']
+
+#login
+@app.route('/login',methods=['POST'])
+def login():
+    data=request.json
+    value=Auth.login(data)
+    print(value)
+    return jsonify(**value),value['code']
 
 # Compile the code and get output
 @app.route('/compile', methods=['POST'])
@@ -36,7 +64,7 @@ def compile():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    compiler.compile_and_run()
+    # compiler.compile_and_run()
 
 
 #Sample compile data
