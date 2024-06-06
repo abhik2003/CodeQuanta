@@ -2,9 +2,10 @@ from flask import Flask, request, jsonify
 from compiler import compiler
 from mongoengine import Document, StringField, EmailField, connect, ValidationError
 from Authentication import Auth
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 
 # In-memory storage for the example
 data_store = {
@@ -38,8 +39,15 @@ def reg():
 #login
 @app.route('/login',methods=['POST'])
 def login():
-    data=request.json
-    value=Auth.login(data)
+    data=request.headers.get('Authorization')
+    value=''
+    if(data is not None):
+        data=data.split(' ')[1]
+        value=Auth.login([data,1])
+    else:
+        data=request.json
+        value=Auth.login([data,0])
+
     print(value)
     return jsonify(**value),value['code']
 
