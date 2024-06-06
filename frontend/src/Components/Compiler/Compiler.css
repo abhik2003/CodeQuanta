@@ -1,0 +1,29 @@
+.compiler-main {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+}
+
+.compiler-left {
+  height: 100vh;
+  border: 1px solid red;
+  overflow-y: scroll;
+  position: relative;
+}
+.compiler-right {
+  border: 1px solid red;
+}
+
+.run-btn {
+  margin-left: 20px;
+  background-color: rgb(25, 40, 115);
+  color: white;
+  border: 1 px solid black !important;
+  border-radius: 5px;
+  padding: 6px;
+  padding-left: 20px;
+  padding-right: 20px;
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+}

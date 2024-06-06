@@ -1,9 +1,11 @@
+import Compiler from "./Components/Compiler/Compiler";
 import Login from "./Components/Login/Login";
 
 
 function App() {
   return (
-    <Login/>
+    // <Login/>
+    <Compiler/>
   );
 }
 
