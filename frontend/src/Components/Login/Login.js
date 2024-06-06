@@ -11,7 +11,7 @@ export default function Login() {
     const handleclicklogin=()=>{
         console.log('hello')
         axios.post('http://127.0.0.1:5000/login',data).then((result)=>{
-            console.log(result)
+            // console.log(result)
             login(result.data.user)
         }).catch((error)=>{
             console.log(error)

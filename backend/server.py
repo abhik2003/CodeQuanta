@@ -39,8 +39,15 @@ def reg():
 #login
 @app.route('/login',methods=['POST'])
 def login():
-    data=request.json
-    value=Auth.login(data)
+    data=request.headers.get('Authorization')
+    value=''
+    if(data is not None):
+        data=data.split(' ')[1]
+        value=Auth.login([data,1])
+    else:
+        data=request.json
+        value=Auth.login([data,0])
+
     print(value)
     return jsonify(**value),value['code']
 
