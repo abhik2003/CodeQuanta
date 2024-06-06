@@ -2,9 +2,10 @@ from flask import Flask, request, jsonify
 from compiler import compiler
 from mongoengine import Document, StringField, EmailField, connect, ValidationError
 from Authentication import Auth
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 
 # In-memory storage for the example
 data_store = {
