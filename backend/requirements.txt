@@ -1,4 +1,4 @@
 flask
-mongoengine
 bcrypt
 pyjwt
+pymongo

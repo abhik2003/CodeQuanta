@@ -4,6 +4,7 @@ from mongoengine import Document, StringField, EmailField, connect, ValidationEr
 from Authentication import Auth
 from flask_cors import CORS
 import pymongo
+from Questions import Question
 
 
 app = Flask(__name__)
@@ -30,7 +31,7 @@ def get_data():
 @app.route('/register',methods=['POST'])
 def reg():
     data=request.json
-    val=Auth.register(data)
+    val=Auth.register(data,user)
     print(val)
     return jsonify(val['message']),val['code']
 
@@ -41,10 +42,10 @@ def login():
     value=''
     if(data is not None):
         data=data.split(' ')[1]
-        value=Auth.login([data,1])
+        value=Auth.login([data,1],user)
     else:
         data=request.json
-        value=Auth.login([data,0])
+        value=Auth.login([data,0],user)
 
     print(value)
     return jsonify(**value),value['code']
@@ -67,6 +68,41 @@ def compile():
         "verdict": result[1]
     }
     return jsonify(res), 200
+
+
+#add problems to the problems set
+@app.route('/add-problems', methods=['POST'])
+def addpb():
+    data=request.json
+    # print(data)
+    # return jsonify(message='ok'),200
+    value=Question.addquestions(data,problems)
+    return jsonify(**value),value.get('code')
+
+
+#GET all questions
+#http://127.0.0.1:5000/questions?page=0
+@app.route('/questions', methods=['GET'])
+def getpb():
+    page=0
+    if(request.args.get('page')is not None):
+        page=int(request.args.get('page'))
+    qvalue=Question.getAllQuestions(problems,page)
+    # print(jsonify(**qvalue))
+    # return jsonify(message='ok'),200
+
+    return jsonify(**qvalue),qvalue.get('code')
+
+#get particular question
+@app.route('/get-question', methods=['POST'])
+def getparticularpb():
+    data=request.json
+    qvalue=Question.getParticularQuestion(problems,data.get('id'))
+    # print(jsonify(**qvalue))
+    # return jsonify(message='ok'),200
+
+    return jsonify(**qvalue),qvalue.get('code')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

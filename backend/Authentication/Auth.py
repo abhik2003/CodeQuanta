@@ -4,7 +4,7 @@ from mongoengine import Document, StringField, EmailField, connect, ValidationEr
 import bcrypt
 import datetime
 import jwt
-from server import user
+
 
 
 #function for creating the token
@@ -20,7 +20,8 @@ def createToken(user):
     return token
 
 #function for registering 
-def register(data):
+def register(data,user):
+    
     try:
         #  print(data)
          #to check if email already exists
@@ -71,7 +72,7 @@ def decodeToken(token):
     return obj
 
 
-def login(recv):
+def login(recv,user):
     obj={'message':'', 'code':'200','user':''}
     if(recv[1]==1):
         return decodeToken(recv[0])
