@@ -3,6 +3,8 @@ from compiler import compiler
 from mongoengine import Document, StringField, EmailField, connect, ValidationError
 from Authentication import Auth
 from flask_cors import CORS
+import pymongo
+
 
 app = Flask(__name__)
 CORS(app)
@@ -12,15 +14,11 @@ data_store = {
     "message": "Hello, World! Nice to see you :)"
 }
 
-# Configuration for MongoDB
-# app.config["MONGODB_SETTINGS"] = {
-#     'db': 'CodeQuanta',
-#     'host': '127.0.0.1',
-#     'port': 27017
-# }
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["CodeQuanta"]
+user = mydb["user"]#collection for storing users
+problems=mydb["problems"]#collection for storing problems
 
-# Initialize MongoEngine
-connect(db='CodeQuanta', host='localhost', port=27017)
 
 
 # Testing purpose

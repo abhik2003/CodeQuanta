@@ -4,39 +4,44 @@ from mongoengine import Document, StringField, EmailField, connect, ValidationEr
 import bcrypt
 import datetime
 import jwt
+from server import user
 
 
-def register(data):
-    try:
-         print(data)
-         passw = data['password'].encode('utf-8')
-         hashpassword = bcrypt.hashpw(passw, bcrypt.gensalt())
-         myobj = {**data, 'password': hashpassword}
-         user = User(**myobj)
-         user.save()
-        #  return "happened successfully"
-         return {'code': 200, 'message': 'Registered successfully'}
-    except ValidationError as err:
-        return {'code': 400, 'message': str(err)}
-
-    except Exception as err:
-        if str(err) == "Tried to save duplicate unique keys (E11000 duplicate key error collection: CodeQuanta.user index: email_1 dup key: { email: \"krish120@gmail.com\" }, full error: {'index': 0, 'code': 11000, 'errmsg': 'E11000 duplicate key error collection: CodeQuanta.user index: email_1 dup key: { email: \"krish120@gmail.com\" }', 'keyPattern': {'email': 1}, 'keyValue': {'email': 'krish120@gmail.com'}})":
-            err = "Email already exists"
-        return {'code': 500, 'message': str(err)}
-
-
+#function for creating the token
 def createToken(user):
     SECRET_KEY = 'CodeQuanta'
     payload = {
-        'email': user.email,
-        'name': user.name,
+        'email': user.get('email'),
+        'name': user.get('name'),
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)  # Token expiration time
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
     return token
 
+#function for registering 
+def register(data):
+    try:
+        #  print(data)
+         #to check if email already exists
+         if(user.find_one({'email':data.get('email')})is  None):
+            passw = data['password'].encode('utf-8')
+            hashpassword = bcrypt.hashpw(passw, bcrypt.gensalt())
+            myobj = {**data, 'password': hashpassword,'solvedCount':0}
+            myuser = user.insert_one(myobj)
+            #registered successfully
+            return {'code': 200, 'message': 'Registered successfully'}
+         else: 
+            #email already exists
+            return {'code': 500, 'message': 'Email already exists'}
+    except ValidationError as err:
+        #if any error occurs
+        return {'code': 400, 'message': str(err)}
 
+    
+
+
+#function for decoding the token for JWT based authentication
 def decodeToken(token):
     SECRET_KEY = 'CodeQuanta'
     # print(token)
@@ -65,33 +70,33 @@ def decodeToken(token):
 
     return obj
 
+
 def login(recv):
-    obj={'message':'', 'code':'','user':''}
+    obj={'message':'', 'code':'200','user':''}
     if(recv[1]==1):
         return decodeToken(recv[0])
     data=recv[0]
     password=data['password'].encode('utf-8')
     try:
-         user=User.objects.get(email=data['email'])
-         if(user is not None):
-             result=bcrypt.checkpw(password,user.password)
+        myuser=user.find_one({'email':data.get('email')})
+        
+        print(myuser)
+        if(myuser is not None):
+             result=bcrypt.checkpw(password,myuser.get('password'))
              if(result):
-                 tok=createToken(user)
+                 tok=createToken(myuser)
                  obj['message']='Successfull'
                  obj['code']=200
                  obj['user']={
-                     'name':user.name,
-                     'email':user.email,
+                     'name':myuser.get('name'),
+                     'email':myuser.get('email'),
                      'token':tok
                  }
-                 
-                 return obj
+             print(obj)
+             return obj
                  
 
     except Exception as err:
         obj['message']=str(err)
-        obj['status']=500
+        obj['code']=500
         return obj
-
-
-    
