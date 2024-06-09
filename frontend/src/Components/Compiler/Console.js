@@ -24,7 +24,6 @@ function Console({ input, setInput, output, error }) {
         <div>
           <textarea
             value={error ? error : output}
-            onChange={(e) => setInput(e.target.value)}
             style={{
               width: "100%",
               padding: "5px",

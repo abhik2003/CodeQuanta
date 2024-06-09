@@ -7,7 +7,7 @@
 .compiler-left {
   height: 100vh;
   border: 1px solid red;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   position: relative;
 }
 .compiler-right {
