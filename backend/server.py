@@ -5,8 +5,12 @@ from Authentication import Auth
 from flask_cors import CORS
 import pymongo
 from Questions import Question
+from dotenv import load_dotenv
+import os
 
-
+# Load environment variables from the .env file
+load_dotenv()
+MONGODB_URL = os.getenv('MONGODB_URL')
 app = Flask(__name__)
 CORS(app)
 
@@ -15,7 +19,7 @@ data_store = {
     "message": "Hello, World! Nice to see you :)"
 }
 
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+myclient = pymongo.MongoClient(MONGODB_URL)
 mydb = myclient["CodeQuanta"]
 user = mydb["user"]#collection for storing users
 problems=mydb["problems"]#collection for storing problems

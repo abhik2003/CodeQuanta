@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Problem.css";
 import ProblemStatement from "./ProblemStatement";
 import ProblemSubmissions from "./ProblemSubmissions";
 import ProblemSolution from "./ProblemSolution";
 import ProblemCodeEditor from "./ProblemCodeEditor";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 function Problem() {
+  const [problem, setProblem] = useState(null);
+  const params = useParams();
+  const base_url = process.env.REACT_APP_API;
+
+  const getProblem = async () => {
+    const { data } = await axios.post(`${base_url}get-question`, { "id": params.id });
+    // console.log(data);
+    setProblem(data.question);
+  }
+  useEffect(() => {
+    if (params?.id) getProblem();
+  },[params?.id])
+
   return (
     <div class="problempage-main">
       <div class="row">
@@ -68,7 +83,7 @@ function Problem() {
               tabindex="0"
               style={{}}
             >
-              <ProblemStatement />
+              <ProblemStatement problem={problem}/>
             </div>
             <div
               class="tab-pane fade"

@@ -1,3 +1,5 @@
 backend/myvenv
 .DS_Store
 backend/.DS_Store
+
+.env
