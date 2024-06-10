@@ -7,8 +7,9 @@ const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState([false]);
 
   const login = (data) => {
-    localStorage.setItem('CQ_token',data.token)
-    setIsAuthenticated([true, {name:data.name,email:data.email}]);
+    console.log(data)
+    localStorage.setItem('CQ_token',data.user.token)
+    setIsAuthenticated([true, {name:data.user.name,email:data.user.email}]);
   };
 
   const logout = () => {
@@ -18,7 +19,7 @@ const AuthProvider = ({ children }) => {
 
   const fetchdatalogin = async () => {
     const token = localStorage.getItem('CQ_token')
-    // console.log(token)
+    console.log(token)
     if (token) {
       const headers = {
         "Authorization": `Bearer ${token}`
@@ -28,7 +29,7 @@ const AuthProvider = ({ children }) => {
         const { user } = result.data
         setIsAuthenticated([true, user])
       }).catch((error) => {
-        console.log(error)
+        console.log(error.response.data)
       })
 
     }
