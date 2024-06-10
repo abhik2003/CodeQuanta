@@ -5,6 +5,7 @@ import Problem from "./Components/Problem/Problem";
 import Register from "./Components/Register/Register";
 import Loader from "./Components/Loader/Loader";
 import AllProblemsList from "./Components/AllProblemsList/AllProblemsList";
+import ProfilePage from "./Components/Profile/ProfilePage";
 
 
 function App() {
@@ -15,6 +16,8 @@ function App() {
       <Route exact path='/login' element={<Login/>} />
       <Route exact path='/register' element={<Register/>} />
       <Route exact path='/problems' element={<AllProblemsList/>} />
+      <Route exact path='/profile' element={<ProfilePage/>} />
+
       
       <Route exact path='/' element={<Compiler/>}/>
       <Route exact path='/problem/:id' element={<Problem/>}/>

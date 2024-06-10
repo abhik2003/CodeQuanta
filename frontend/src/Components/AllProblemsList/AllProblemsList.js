@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
+import Footer from '../Footer/Footer';
 
 export default function AllProblemsList() {
     const [problems, setProblems] = useState([])
@@ -50,7 +51,7 @@ export default function AllProblemsList() {
         <>
         <Navbar/>
         <div className="min-h-screen flex items-start justify-center bg-gray-100 pt-8">
-            <div className="w-3/4 bg-white rounded-lg p-6">
+            <div className="overflow-x-scroll md:w-3/4 bg-white rounded-lg p-6">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="">
                         <tr>
@@ -71,7 +72,7 @@ export default function AllProblemsList() {
                         ))}
                     </tbody>
                 </table>
-                <div className="mt-4 flex justify-between">
+                <div className="mt-4 flex justify-between w-full">
                     <button
                         onClick={handlePrevious}
                         className={`px-4 py-2 bg-gray-400 text-gray-100 rounded ${currentPage === 0 ? '' : 'hover:bg-gray-200'}`}
@@ -89,6 +90,8 @@ export default function AllProblemsList() {
                 </div>
             </div>
         </div>
+        <hr />
+        <Footer/>
         </>
     )
 }
