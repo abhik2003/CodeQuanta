@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import os
 import random
 from CodeJudge import CodeJudge
+from Submissions import Submissions
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -24,7 +25,8 @@ data_store = {
 myclient = pymongo.MongoClient(MONGODB_URL)
 mydb = myclient["CodeQuanta"]
 user = mydb["user"]#collection for storing users
-problems=mydb["problems"]#collection for storing problems
+problems = mydb["problems"]#collection for storing problems
+submissions = mydb["submissions"]#collection for storing submissions
 
 
 
@@ -144,16 +146,40 @@ def submitAnswer():
             tester_code_extension = question.get('checker_code').get('language')
             test_cases = question.get('test_cases')
             test_cases = [tc["input"] for tc in test_cases]
-            submission_id = "sub"+str(random.randint(1000000,10000000))
+            submission_id = "sub"+str(random.randint(100000000,1000000000))
             time_limit = 3
-            
-            result = CodeJudge.Judge(code, submission_id, extension, time_limit, tester_code, tester_code_extension, test_cases)
-            
-            res = {
-                "status": result[0],
-                "verdict": result[1]
+            submission_data={
+                'problem_id': problem_id,
+                'user_id': user_id,
+                'code': code,
+                'extension': extension,
+                'verdict': "Pending",
+                'status': -1
             }
-            return jsonify(res), 200
+            sub_res = Submissions.addSubmission(submission_data, submissions)
+            if sub_res['code']==200:
+                print(sub_res['submission_id'])
+                # return jsonify({}),200
+                submission_id = str(sub_res['submission_id'])
+                result = CodeJudge.Judge(code, submission_id, extension, time_limit, tester_code, tester_code_extension, test_cases)
+            
+                res = {
+                    "status": result[0],
+                    "verdict": result[1]
+                }
+                
+                data = {
+                    'id': submission_id,
+                    'verdict': res['verdict'],
+                    'status': int(res['status'])
+                }
+                update_res = Submissions.updateVerdict(data, submissions)
+                if update_res['code'] == 200:
+                    return jsonify(res), 200
+                else:
+                    return jsonify(update_res), update_res['code']
+            else:
+                return jsonify(sub_res), sub_res['code']
         except Exception as err:
             return jsonify({'message':str(err)}), 500
     
@@ -162,7 +188,6 @@ def submitAnswer():
     
 if __name__ == '__main__':
     app.run(debug=True)
-    # compiler.compile_and_run()
 
 
 #Sample compile data
