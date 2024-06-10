@@ -2,7 +2,7 @@ from bson.objectid import ObjectId
 
 def addSubmission(data, submissions):
     #problem_id, user_id, code, extension, verdict(initially pending)
-    required_fields = ['problem_id', 'user_id', 'code', 'extension', 'verdict', 'status']
+    required_fields = ['problem_id', 'user_id', 'code', 'extension', 'verdict', 'status', 'timestamp']
     
     for rf in required_fields:
         if rf not in data:

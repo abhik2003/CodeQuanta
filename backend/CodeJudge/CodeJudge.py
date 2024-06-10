@@ -85,7 +85,7 @@ def docker_handler(docker_container_name: str,directory_name: str,  time_limit: 
 
     if compile_process.returncode !=0:
         print("Compilation error")
-        result=[False, compile_process.stderr]
+        result=[False, "Compilation error"]
     else: 
         #Compiled successfully
         #execute the program

@@ -4,7 +4,7 @@ import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
 
 
-const CodingArea = ({ runHandler, submitHandler, input }) => {
+const CodingArea = ({ runHandler, submitHandler, input, problem_id }) => {
   const placeHolder = {
     cpp: "// Start typing your code here\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
     py: "# Start typing your code here\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
@@ -54,7 +54,7 @@ const CodingArea = ({ runHandler, submitHandler, input }) => {
           </buutton>
           <buutton
             onClick={() => {
-              submitHandler(code, input, language);
+              submitHandler(code, problem_id, language);
             }}
             id="problem-submit-btn"
           >

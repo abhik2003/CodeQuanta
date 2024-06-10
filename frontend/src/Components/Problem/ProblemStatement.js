@@ -9,7 +9,7 @@ function ProblemStatement({ problem }) {
   ));
   return (
     <div style={{ height: "100%", overflowY: "scroll" }}>
-      <h2>{problem?.statement}</h2>
+      <h2 style={{fontSize: "30px", fontWeight:"500"}} className='mb-3'>{problem?.statement}</h2>
       <p>{formattedDescription}</p>
     </div>
   );

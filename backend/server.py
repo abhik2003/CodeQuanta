@@ -10,6 +10,8 @@ import os
 import random
 from CodeJudge import CodeJudge
 from Submissions import Submissions
+from datetime import datetime
+
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -162,7 +164,8 @@ def submitAnswer():
                 'code': code,
                 'extension': extension,
                 'verdict': "Pending",
-                'status': -1
+                'status': -1,
+                'timestamp': datetime.utcnow() 
             }
             sub_res = Submissions.addSubmission(submission_data, submissions)
             if sub_res['code']==200:

@@ -8,13 +8,14 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 function Problem() {
   const [problem, setProblem] = useState(null);
+  const [problem_id, setProblemId] = useState(null);
   const params = useParams();
   const base_url = process.env.REACT_APP_API;
   console.log(base_url, "    ", params.id)
   const getProblem = async () => {
     const { data } = await axios.post(`${base_url}get-question`, { "id": params.id });
-    // console.log(data);
-    setProblem(data.question);
+    setProblem(data?.question);
+    setProblemId(data?.question?.id);
   }
   useEffect(() => {
     if (params?.id) getProblem();
@@ -83,7 +84,7 @@ function Problem() {
               tabindex="0"
               style={{}}
             >
-              <ProblemStatement problem={problem}/>
+              <ProblemStatement problem={problem} />
             </div>
             <div
               class="tab-pane fade"
@@ -106,7 +107,7 @@ function Problem() {
           </div>
         </div>
         <div className="col-6 problempage-right">
-          <ProblemCodeEditor />
+          <ProblemCodeEditor problem_id={problem_id} />
         </div>
       </div>
     </div>
