@@ -2,7 +2,7 @@ import os
 import subprocess
 import shutil
 import threading
-from Commands import compile_commands, run_commands, cheker_compile_commands, checker_run_commands
+from CodeJudge.Commands import compile_commands, run_commands, cheker_compile_commands, checker_run_commands
 
 def stop_and_remove_container(docker_container_name):
     # stop  the container after execution
@@ -106,7 +106,7 @@ def docker_handler(docker_container_name: str,directory_name: str,  time_limit: 
                     continue
                 else:
                     print(verdict)
-                    result = [False, f"Wrong answer on testcase {index}"]
+                    result = [False, f"Wrong answer on testcase {index+1}"]
                     break
             else:
                 result=[False, f"{res[1]} on Test Case {index+1}"]
@@ -158,53 +158,53 @@ def Judge(code: str, submission_id: str, extension: str, time_limit: int, tester
 
     return result
 
-if __name__ == '__main__':
-    code = '''
-#include <iostream>
-#include <vector>
-using namespace std;
-int main()
-{
-    int n;
-    cin >> n;
-    while(n--){
-        int x;
-        cin>>x;
-        cout<<x*x<<" ";
-    }
-    return 0;
-}
-'''
-    input_="5\n1 2 3 4 5"
-    tester_code='''
-def test():
-    n = int(input())
-    a = list(map(int,input().split()))
-    ans =[ i*i for i in a]
+# if __name__ == '__main__':
+#     code = '''
+# #include <iostream>
+# #include <vector>
+# using namespace std;
+# int main()
+# {
+#     int n;
+#     cin >> n;
+#     while(n--){
+#         int x;
+#         cin>>x;
+#         cout<<x*x<<" ";
+#     }
+#     return 0;
+# }
+# '''
+#     input_="5\n1 2 3 4 5"
+#     tester_code='''
+# def test():
+#     n = int(input())
+#     a = list(map(int,input().split()))
+#     ans =[ i*i for i in a]
 
-    with open('output.txt', 'r') as file:
-        lines = file.readlines()
-        non_blank_lines = [line.split() for line in lines if line.strip()]
+#     with open('output.txt', 'r') as file:
+#         lines = file.readlines()
+#         non_blank_lines = [line.split() for line in lines if line.strip()]
 
-    if len(non_blank_lines)!=1:
-        print("WA1")
-        return
-    else:
-        try:
-            for i in range(len(ans)):
-                if ans[i]!=int(non_blank_lines[0][i]):
-                    print("WA2")
-                    return
-            print("Accepted")
-        except Exception as e:
-            print("WA3")
-            return
+#     if len(non_blank_lines)!=1:
+#         print("WA1")
+#         return
+#     else:
+#         try:
+#             for i in range(len(ans)):
+#                 if ans[i]!=int(non_blank_lines[0][i]):
+#                     print("WA2")
+#                     return
+#             print("Accepted")
+#         except Exception as e:
+#             print("WA3")
+#             return
     
-if __name__ == "__main__":
-    test()
-    '''
+# if __name__ == "__main__":
+#     test()
+#     '''
     
     
-    res=Judge(code, "123", "cpp", 3, tester_code, 'py', [input_,input_])
-    print(res)
+#     res=Judge(code, "123", "cpp", 3, tester_code, 'py', [input_,input_])
+#     print(res)
     

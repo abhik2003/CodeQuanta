@@ -7,6 +7,8 @@ import pymongo
 from Questions import Question
 from dotenv import load_dotenv
 import os
+import random
+from CodeJudge import CodeJudge
 
 # Load environment variables from the .env file
 load_dotenv()
@@ -108,7 +110,56 @@ def getparticularpb():
 
     return jsonify(**qvalue),qvalue.get('code')
 
+#Submit problem answer
+@app.route('/submit-answer', methods=['POST'])
+def submitAnswer():
+    data = request.json   #problem_id, code, extension, user_id
+    required_fields = ['problem_id', 'code', 'extension', 'user_id']
+    
+    for rf in required_fields:
+        if rf not in data:
+            res = {
+                "message" : "Something is missing in request"
+            }
+            return jsonify(res), 400
+        
+    # Process the data 
+    problem_id = data['problem_id']
+    code = data['code']
+    extension = data['extension']
+    user_id = data['user_id']
+    
+    question = Question.getProblemDetails(problems=problems, id=problem_id)
+    if question['code']!=200:
+        res = {
+            "message": question.get('message')
+        }
+        return jsonify(res), question.get('code')
+    else:
+        try:
+            
+            question = question.get('question')
+            print(question)
+            tester_code = question.get('checker_code').get('code')
+            tester_code_extension = question.get('checker_code').get('language')
+            test_cases = question.get('test_cases')
+            test_cases = [tc["input"] for tc in test_cases]
+            submission_id = "sub"+str(random.randint(1000000,10000000))
+            time_limit = 3
+            
+            result = CodeJudge.Judge(code, submission_id, extension, time_limit, tester_code, tester_code_extension, test_cases)
+            
+            res = {
+                "status": result[0],
+                "verdict": result[1]
+            }
+            return jsonify(res), 200
+        except Exception as err:
+            return jsonify({'message':str(err)}), 500
+    
 
+    
+    
 if __name__ == '__main__':
     app.run(debug=True)
     # compiler.compile_and_run()
@@ -125,3 +176,13 @@ if __name__ == '__main__':
     "time_limit" : 2
 }
 '''
+
+
+#Submit answer sample
+
+# {
+#     "problem_id" : "66660662a11801a1c015274f",
+#     "code": "n = int(input())\na = list(map(int, input().split()))\nans = [i*i for i in a]\nprint(*ans)",
+#     "extension": "py",
+#     "user_id": "100"
+# }

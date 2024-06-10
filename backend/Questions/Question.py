@@ -46,7 +46,22 @@ def getParticularQuestion(problems,id):
         return {'code':500,'message':str(err)}
 
 
-
+def getProblemDetails(problems,id):
+    if(id is None):
+        return {'code':400,'message':'specify the question id'}
+    try:
+        obj_id = ObjectId(id)
+        # print(obj_id)
+        question=problems.find_one({"_id":obj_id},{"test_cases":1,'checker_code':1})
+        # print(question)
+        if(question is None):
+            return {'code':400,'message': 'question not found'}
+        # question["id"]=str(question["_id"])
+        del question["_id"]
+        
+        return {'code':200,'question': question}
+    except Exception as err:
+        return {'code':500,'message':str(err)}
 
 # {
 #   "statement": "Calculate the Factorial of a Number",
