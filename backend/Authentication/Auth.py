@@ -93,10 +93,17 @@ def login(recv,user):
                      'email':myuser.get('email'),
                      'token':tok
                  }
-             print(obj)
+             else:
+                obj['message']='Wrong password'
+                obj['code']=400
+            #  print(obj)
              return obj
                  
-
+        else:
+              obj['message']='Email does not exist'
+              obj['code']=400
+              return obj
+             
     except Exception as err:
         obj['message']=str(err)
         obj['code']=500

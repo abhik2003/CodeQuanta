@@ -10,7 +10,7 @@ function Problem() {
   const [problem, setProblem] = useState(null);
   const params = useParams();
   const base_url = process.env.REACT_APP_API;
-
+  console.log(base_url, "    ", params.id)
   const getProblem = async () => {
     const { data } = await axios.post(`${base_url}get-question`, { "id": params.id });
     // console.log(data);

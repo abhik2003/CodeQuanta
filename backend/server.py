@@ -45,6 +45,7 @@ def login():
     data=request.headers.get('Authorization')
     value=''
     if(data is not None):
+        
         data=data.split(' ')[1]
         value=Auth.login([data,1],user)
     else:

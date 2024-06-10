@@ -1,18 +1,19 @@
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
 import axios from 'axios'
-import { LockClosedIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
+import { LockClosedIcon, MailIcon, EyeIcon, EyeOffIcon,UserIcon } from '@heroicons/react/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../Loader/Loader';
 
-export default function Login() {
+export default function Register() {
     const [pwd, setPwd] = useState(true)
     const [status, setStatus] = useState([false, ''])
     const [loading, setLoading] = useState(false)
     const url=process.env.REACT_APP_API
     const [details, setDetails] = useState({
         'email': '',
-        'password': ''
+        'password': '',
+        'name':''
     })
     const { login, isAuthenticated } = useContext(AuthContext)
     const navigate = useNavigate()
@@ -50,21 +51,22 @@ export default function Login() {
     const handleSubmit = (e) => {
         e.preventDefault()
         console.log('reached here')
+        
         setLoading(true)
         if (passwordCheckLogic()) {
             setLoading(false)
             return
         }
-        axios.post(`${url}login`, {
+        axios.post(`${url}register`, {
             email: details.email,
-            password: details.password
+            password: details.password,
+            name:details.name
         }).then((result) => {
             console.log(result.status)
             if (result.status === 200) {
                 setLoading(false)
-                login(result.data)
                 
-                navigate('/')
+                navigate('/login')
                 
             }
             else {
@@ -74,7 +76,7 @@ export default function Login() {
 
 
         }).catch((error) => {
-            console.log(error.response.data)
+            console.log(error)
             setLoading(false)
 
             if (error.response.data)
@@ -92,10 +94,26 @@ export default function Login() {
         <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-white">
             <div className="bg-blue-700 rounded-lg shadow-lg w-3/4 md:w-1/2 xl:w-1/3 max-w-4xl flex flex-col md:flex-row">
                 <div className="w-full bg-white p-4  rounded-lg flex items-center flex-col">
-                    <h1 className="text-2xl  mb-6 text-center">Sign In</h1>
+                    <h1 className="text-2xl  mb-6 text-center">Sign Up</h1>
                     <hr className="bg-white w-full mb-6" />
 
                     <form className="w-full flex flex-col items-center" onSubmit={handleSubmit}>
+                    <div className="mb-8 w-full flex pl-4 items-center">
+                            <label className="block text-white mb-2 text-xl" htmlFor="email">
+                                <UserIcon className="h-7 w-7 text-gray-500 inline-block mr-2 " />
+                            </label>
+                            <input
+                                type="text"
+                                name="name"
+                                value={details.name}
+                                onChange={handleChange}
+                                placeholder="Name"
+                                className="w-3/4 h-12 px-3 py-2 rounded border
+                                hover:bg-gray-200
+                                border-blue-100 focus:outline-none focus:text-black"
+                                required
+                            />
+                        </div>
                         <div className="mb-8 w-full flex pl-4 items-center">
                             <label className="block text-white mb-2 text-xl" htmlFor="email">
                                 <MailIcon className="h-7 w-7 text-gray-500 inline-block mr-2 " />
@@ -146,13 +164,12 @@ export default function Login() {
                                 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 flex items-center justify-center"
                             >
                                 {loading && <Loader size={24} />} 
-                                
-                                Sign In
+                                Sign Up
                             </button>
                         </div>
 
                         <div className="link flex text-gray-500  mt-4 text-md pl-4">
-                            Don't have an account? <Link className="text-indigo-700 underline hover:text-indigo-300 ml-1" to="/register">Register</Link>
+                            Already have an account? <Link className="text-indigo-700 underline hover:text-indigo-300 ml-1" to="/login">Sign In</Link>
                         </div>
                     </form>
                 </div>
