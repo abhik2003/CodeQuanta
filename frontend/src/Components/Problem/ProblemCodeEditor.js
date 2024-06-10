@@ -7,7 +7,8 @@ import axios from 'axios';
 function ProblemCodeEditor() {
     const [input, setInput] = useState("");
     const [output, setOutput] = useState("");
-    const [error, setError] = useState("");
+  const [error, setError] = useState("");
+  const base_url = process.env.REACT_APP_API;
 
     const generateSubmissionId = () => {
       const timestamp = Date.now();
@@ -24,10 +25,7 @@ function ProblemCodeEditor() {
         time_limit: 5,
       };
       // console.log(request);
-      const { data } = await axios.post(
-        "http://127.0.0.1:5000/compile",
-        request
-      );
+      const { data } = await axios.post(`${base_url}compile`, request);
       if (data?.status) {
         setOutput(data.verdict);
         setError("");
