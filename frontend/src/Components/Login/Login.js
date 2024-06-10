@@ -4,6 +4,7 @@ import axios from 'axios'
 import { LockClosedIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import Loader from '../Loader/Loader';
+import Navbar from '../Navbar/Navbar';
 
 export default function Login() {
     const [pwd, setPwd] = useState(true)
@@ -64,7 +65,7 @@ export default function Login() {
                 setLoading(false)
                 login(result.data)
                 
-                navigate('/')
+                navigate('/problems')
                 
             }
             else {
@@ -78,7 +79,7 @@ export default function Login() {
             setLoading(false)
 
             if (error.response.data)
-                setStatus([true, error.response.data])
+                setStatus([true, error.response.data.message])
             else
                 setStatus([true, error.message])
 
@@ -89,16 +90,20 @@ export default function Login() {
         setPwd(pwd => !pwd)
     }
     return (
+        <>
+        
         <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-white">
-            <div className="bg-blue-700 rounded-lg shadow-lg w-3/4 md:w-1/2 xl:w-1/3 max-w-4xl flex flex-col md:flex-row">
+            <div className="bg-blue-700 rounded-lg shadow-lg w-4/5 md:w-1/2 xl:w-1/3 max-w-4xl flex flex-col md:flex-row">
                 <div className="w-full bg-white p-4  rounded-lg flex items-center flex-col">
-                    <h1 className="text-2xl  mb-6 text-center">Sign In</h1>
-                    <hr className="bg-white w-full mb-6" />
+                    {/* <h1 className="text-2xl  mb-6 text-center">Sign In</h1> */}
+                    <img src={`${process.env.PUBLIC_URL}/logo.png`} className='mb-8' height={150} width={150} alt="here" />
+                    {/* <hr className="bg-white w-full mb-6" /> */}
 
                     <form className="w-full flex flex-col items-center" onSubmit={handleSubmit}>
-                        <div className="mb-8 w-full flex pl-4 items-center">
+                        <div className="mb-8 w-full flex  pl-4 items-center">
                             <label className="block text-white mb-2 text-xl" htmlFor="email">
-                                <MailIcon className="h-7 w-7 text-gray-500 inline-block mr-2 " />
+                                <MailIcon className="h-7 w-7  text-gray-500 inline-block mr-2 " />
+                                
                             </label>
                             <input
                                 type="email"
@@ -158,5 +163,6 @@ export default function Login() {
                 </div>
             </div>
         </div>
+        </>
     )
 }
