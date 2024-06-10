@@ -59,6 +59,14 @@ def login():
     print(value)
     return jsonify(**value),value['code']
 
+
+#user-profile
+@app.route('/user-profile',methods=['POST'])
+def userProfile():
+    email=request.json.get('email')
+    value=Auth.profile(email,user)
+    return jsonify(**value),value.get('code')
+
 # Compile the code and get output
 @app.route('/compile', methods=['POST'])
 def compile():
