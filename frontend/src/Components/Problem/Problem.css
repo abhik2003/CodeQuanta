@@ -39,6 +39,20 @@
   /* position: absolute; */
   right: 125px;
 }
+.copy-btn {
+  margin-left: 20px;
+  background-color: rgb(118, 175, 255);
+  color: white;
+  border: 1 px solid black !important;
+  /* border-radius: 5px;
+  padding: 4px;
+  padding-left: 8px;
+  padding-right: 8px; */
+  /* font-size: 17px; */
+}
+.copy-btn:hover{
+  background-color: rgb(96, 143, 209);
+}
 #problem-submit-btn {
   margin-left: 20px;
   background-color: rgb(13, 154, 0);

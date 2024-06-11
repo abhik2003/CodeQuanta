@@ -55,7 +55,6 @@ def getAllSubmissionUser(user_id, page, count, submissions):
             page -=1
         if count is None:
             count = 10
-            
         submissions_=list(submissions.find({"user_id": user_id},{}).sort("timestamp", -1).skip(page*count).limit(count))
         all_sub = [
             {
@@ -76,3 +75,28 @@ def getAllSubmissionUser(user_id, page, count, submissions):
         return jsonify({'message':str(err)}), 500
         
 
+def getAllSubmissionUserProblem(user_id, problem_id, submissions):
+    if user_id is None:
+        return jsonify({"messae": "User id is missing"}), 400
+    if problem_id is None:
+        return jsonify({"messae": "Problem id is missing"}), 400
+    try:
+        problem_id = ObjectId(problem_id)
+        submissions_=list(submissions.find({"user_id": user_id, "problem_id":problem_id},{}).sort("timestamp", -1))
+        all_sub = [
+            {
+                "id": str(sub["_id"]),
+                "problem_id": str(sub["problem_id"]),
+                "user_id": str(sub["user_id"]),
+                "code": sub["code"],
+                "extension": sub["extension"],
+                "verdict": sub["verdict"],
+                "status": sub["status"],
+                "timestamp": sub["timestamp"]
+            }
+
+            for sub in submissions_
+        ]
+        return jsonify({'submissions':all_sub}), 200
+    except Exception as err:
+        return jsonify({'message':str(err)}), 500
