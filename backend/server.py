@@ -194,8 +194,17 @@ def submitAnswer():
         except Exception as err:
             return jsonify({'message':str(err)}), 500
     
-
-    
+#Get all submissions of an user
+@app.route('/get-submissions-user-all', methods=['POST'])
+def getAllSubmissionUser():
+    try:
+        req = request.json
+        user_id = req.get('user_id')
+        page = req.get('page')
+        count = req.get('count')
+        return Submissions.getAllSubmissionUser(user_id, page, count, submissions)
+    except Exception as err:
+            return jsonify({'message':str(err)}), 500
     
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,4 +1,5 @@
 from bson.objectid import ObjectId
+from flask import jsonify
 
 def addSubmission(data, submissions):
     #problem_id, user_id, code, extension, verdict(initially pending)
@@ -43,5 +44,35 @@ def updateVerdict(data, submissions):
 
         
 
+def getAllSubmissionUser(user_id, page, count, submissions):
+    if user_id is None:
+        return jsonify({"messae": "User id is missing"}), 400
+    all_sub=[]
+    try:
+        if page is None:
+            page = 0
+        else:
+            page -=1
+        if count is None:
+            count = 10
+            
+        submissions_=list(submissions.find({"user_id": user_id},{}).sort("timestamp", -1).skip(page*count).limit(count))
+        all_sub = [
+            {
+                "id": str(sub["_id"]),
+                "problem_id": str(sub["problem_id"]),
+                "user_id": str(sub["user_id"]),
+                "code": sub["code"],
+                "extension": sub["extension"],
+                "verdict": sub["verdict"],
+                "status": sub["status"],
+                "timestamp": sub["timestamp"]
+            }
 
+            for sub in submissions_
+        ]
+        return jsonify({'submissions':all_sub}), 200
+    except Exception as err:
+        return jsonify({'message':str(err)}), 500
+        
 
