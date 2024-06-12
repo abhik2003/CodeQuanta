@@ -71,7 +71,11 @@ def userProfile():
 
 
 #add admin
-# @app.route('/add-admin',methods=['POST'])
+@app.route('/add-admin',methods=['POST'])
+def addnewadmin():
+    data=request.json
+    value=Auth.addAdmin(data,admins,user)
+    return jsonify(**value),value['code']
 
 # Compile the code and get output
 @app.route('/compile', methods=['POST'])

@@ -7,12 +7,13 @@ import jwt
 
 
 # function for creating the token
-def createToken(user,admin):
+def createToken(user,admin,id):
     SECRET_KEY = 'CodeQuanta'
     payload = {
         'email': user.get('email'),
         'name': user.get('name'),
         'admin':admin,
+        'id':id,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)  # Token expiration time
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
@@ -30,7 +31,12 @@ def register(data, user):
         if (user.find_one({'email': data.get('email')}) is None):
             passw = data['password'].encode('utf-8')
             hashpassword = bcrypt.hashpw(passw, bcrypt.gensalt())
-            myobj = {**data, 'password': hashpassword, 'solvedCount': 0}
+            myobj = {**data, 'password': hashpassword, 
+                     'solvedCount': {
+                         'easy':0,
+                         'medium':0,
+                         'hard':0
+                     }}
             myuser = user.insert_one(myobj)
             # registered successfully
             return {'code': 200, 'message': 'Registered successfully'}
@@ -56,7 +62,8 @@ def decodeToken(token):
         obj['user'] = {
             'name': decoded_data['name'],
             'email': decoded_data['email'],
-            'admin':decoded_data['admin']
+            'admin':decoded_data['admin'],
+            'id':decoded_data['id']
 
         }
         # Adjust according to your User model
@@ -91,13 +98,14 @@ def login(recv, user,admins):
                 admin=1
             result = bcrypt.checkpw(password, myuser.get('password'))
             if (result):
-                tok = createToken(myuser,admin)
+                tok = createToken(myuser,admin,str(myuser.get('_id')))
                 obj['message'] = 'Successfull'
                 obj['code'] = 200
                 obj['user'] = {
                     'name': myuser.get('name'),
                     'email': myuser.get('email'),
                     'admin':admin,
+                    'id':str(myuser.get('_id')),
                     'token': tok
                 }
             else:
@@ -152,7 +160,36 @@ def profile(email, user):
         return obj
 
 
-# def addadmin(data,admins,user):
-#     try:
-#         admin=admins.find_one({'email':data.get('email')})
-#         myuser=admins.find_one({''})
+def addAdmin(data,admins,user):
+    obj={'code':200,'message':''}
+    try:
+        me=admins.find_one({'userId':data.get('id')})
+        userBeingAdded=user.find_one({'email':data.get('userBeingAddedEmail')})
+        ifadmin=admins.find_one({'email':data.get('userBeingAddedEmail')})
+        if(ifadmin is not None):
+            obj['code']=500
+            obj['message']='Person is already an admin'
+        elif(me is None or userBeingAdded is None ):
+            obj['code']=500
+            obj['message']='User not found'
+        else:
+            admins.insert_one({
+                'userID':str(userBeingAdded['_id']),
+                'email':userBeingAdded['email'],
+                'adminsAdded':[],
+                'questionsAdded':{
+                    'count':0,
+                    'questionId':[]
+                }
+            })
+            admins.update_one(
+                {'userId':data.get('id')},
+                {'$push':{'adminsAdded':str(userBeingAdded['_id'])}}
+            )
+            obj['message']='Admin added successfully'
+        return obj
+    except Exception as err:
+        obj['code']=400
+        obj['message']=str(err)
+        return obj
+            

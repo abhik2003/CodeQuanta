@@ -6,13 +6,14 @@ def addquestions(data, problems, admins):
         return {'code': 500, 'message': 'Error adding the problem'}
     else:
         try:
-            email = data['email']
-            del data['email']
+            uid = data['id']
+            del data['id']
+            
             # myadmin=admins.find_one({'email':email})
             pb = problems.insert_one(data)
             print(str(pb.inserted_id))
             admins.update_one(
-                {'email': email},
+                {'userId': uid},
                 {
                     # Increment the count by 1
                     '$inc': {'questionsAdded.count': 1},
