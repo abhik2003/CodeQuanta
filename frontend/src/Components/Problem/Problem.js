@@ -93,7 +93,7 @@ function Problem() {
               aria-labelledby="submissions-tab"
               tabindex="0"
             >
-              <ProblemSubmissions />
+              <ProblemSubmissions problem_id={problem_id} problem_name={problem?.statement} />
             </div>
             <div
               class="tab-pane fade"
