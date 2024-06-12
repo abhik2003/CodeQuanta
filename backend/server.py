@@ -29,7 +29,7 @@ mydb = myclient["CodeQuanta"]
 user = mydb["user"]#collection for storing users
 problems = mydb["problems"]#collection for storing problems
 submissions = mydb["submissions"]#collection for storing submissions
-
+admins=mydb["admins"]#collection for admins
 
 
 # Testing purpose
@@ -53,12 +53,12 @@ def login():
     if(data is not None):
         
         data=data.split(' ')[1]
-        value=Auth.login([data,1],user)
+        value=Auth.login([data,1],user,admins)
     else:
         data=request.json
-        value=Auth.login([data,0],user)
+        value=Auth.login([data,0],user,admins)
 
-    print(value)
+    # print(value)
     return jsonify(**value),value['code']
 
 
@@ -68,6 +68,10 @@ def userProfile():
     email=request.json.get('email')
     value=Auth.profile(email,user)
     return jsonify(**value),value.get('code')
+
+
+#add admin
+# @app.route('/add-admin',methods=['POST'])
 
 # Compile the code and get output
 @app.route('/compile', methods=['POST'])
@@ -95,7 +99,7 @@ def addpb():
     data=request.json
     # print(data)
     # return jsonify(message='ok'),200
-    value=Question.addquestions(data,problems)
+    value=Question.addquestions(data,problems,admins)
     return jsonify(**value),value.get('code')
 
 

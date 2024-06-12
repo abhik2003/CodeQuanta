@@ -7,11 +7,12 @@ import jwt
 
 
 # function for creating the token
-def createToken(user):
+def createToken(user,admin):
     SECRET_KEY = 'CodeQuanta'
     payload = {
         'email': user.get('email'),
         'name': user.get('name'),
+        'admin':admin,
         'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)  # Token expiration time
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
@@ -55,6 +56,7 @@ def decodeToken(token):
         obj['user'] = {
             'name': decoded_data['name'],
             'email': decoded_data['email'],
+            'admin':decoded_data['admin']
 
         }
         # Adjust according to your User model
@@ -71,7 +73,7 @@ def decodeToken(token):
     return obj
 
 
-def login(recv, user):
+def login(recv, user,admins):
     obj = {'message': '', 'code': '200', 'user': ''}
     if (recv[1] == 1):
         return decodeToken(recv[0])
@@ -82,14 +84,20 @@ def login(recv, user):
 
         print(myuser)
         if (myuser is not None):
+            admin=admins.find_one({'email':data.get('email')})
+            if(admin is None):
+                admin=0
+            else:
+                admin=1
             result = bcrypt.checkpw(password, myuser.get('password'))
             if (result):
-                tok = createToken(myuser)
+                tok = createToken(myuser,admin)
                 obj['message'] = 'Successfull'
                 obj['code'] = 200
                 obj['user'] = {
                     'name': myuser.get('name'),
                     'email': myuser.get('email'),
+                    'admin':admin,
                     'token': tok
                 }
             else:
@@ -142,3 +150,9 @@ def profile(email, user):
         obj['code']=400
         obj['message']=str(err)
         return obj
+
+
+# def addadmin(data,admins,user):
+#     try:
+#         admin=admins.find_one({'email':data.get('email')})
+#         myuser=admins.find_one({''})
