@@ -8,8 +8,8 @@ const AuthProvider = ({ children }) => {
 
   const login = (data) => {
     console.log(data)
-    localStorage.setItem('CQ_token',data.user.token)
-    setIsAuthenticated([true, {name:data.user.name,email:data.user.email}]);
+    localStorage.setItem('CQ_token', data.user.token)
+    setIsAuthenticated([true, { name: data.user.name, email: data.user.email, id: data.user.id, admin:data.user.admin }]);
   };
 
   const logout = () => {
@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
         const { user } = result.data
         setIsAuthenticated([true, user])
       }).catch((error) => {
-        console.log(error.response.data)
+        console.log(error.response)
       })
 
     }

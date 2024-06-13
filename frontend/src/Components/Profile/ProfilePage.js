@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import CircularProgress from './CircularProgress'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Navbar from '../Navbar/Navbar'
 import axios from 'axios'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
@@ -15,8 +15,11 @@ export default function ProfilePage() {
             'medium': 0,
             'hard': 0
         },
-        'submissions':[]
+        'submissions':[],
+        'totalProblems':1
     })
+    const navigate=useNavigate()
+
     let percentage = (user.solvedCount.easy + user.solvedCount.medium + user.solvedCount.hard) * 100 / user.totalProblems
     if (percentage === null) {
         percentage = 50
@@ -37,6 +40,10 @@ export default function ProfilePage() {
     }
 
     useEffect(() => {
+        if(!isAuthenticated[0]){
+            navigate('/problems')
+            return
+        }
         getUser()
     }, [isAuthenticated])
     return (

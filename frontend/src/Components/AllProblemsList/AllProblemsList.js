@@ -36,11 +36,11 @@ export default function AllProblemsList() {
     };
     const diff = {
         'easy': 'text-green-600',
-        'difficult': 'text-red-600',
-        'medium': 'text-yellow-600',
+        'hard': 'text-red-600',
+        'medium': 'text-yellow-300',
         'Easy': 'text-green-600',
-        'Difficult': 'text-red-600',
-        'Medium': 'text-yellow-600',
+        'Hard': 'text-red-600',
+        'Medium': 'text-yellow-300',
     }
     const navigateToProblem=(id)=>{
         navigate(`/problem/${id}`)

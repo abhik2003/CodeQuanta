@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ export default function Navbar() {
 
     console.log(isAuthenticated)
     const navigate = useNavigate()
+    
 
     const handleNavigateLogin = () => {
         console.log('here')
@@ -24,6 +25,14 @@ export default function Navbar() {
 
         logout()
     }
+
+    useEffect(()=>{
+          if(location.pathname==='/admin'){
+            if(!isAuthenticated[0] || isAuthenticated[1].admin===0 )
+                navigate('/problems')
+                
+          }
+    },[location])
     return (
         <nav className="bg-gray-800 text-white py-2 px-4  w-full z-50">
             <div className="container mx-auto flex items-center justify-between">
@@ -43,6 +52,10 @@ export default function Navbar() {
                     <Link to="/problems" className={`text-gray-400 hover:text-white ${location.pathname === '/problems' ? "border-b-2 " : ""}`}>Problems</Link>
 
                     <Link to="/contest" className={`text-gray-400 hover:text-white ${location.pathname === '/contest' ? "border-b-2 " : ""}`}>Contest</Link>
+
+                    {isAuthenticated[0] && isAuthenticated[1].admin === 1 &&
+                        <Link to="/admin" className={`text-gray-400 hover:text-white ${location.pathname === '/admin' ? "border-b-2 " : ""}`}>Admin</Link>
+                    }
 
 
                 </div>
@@ -106,7 +119,7 @@ export default function Navbar() {
                     </button>}
 
 
-                    
+
 
                     {isAuthenticated[0] && <button className="text-white bg-red-500 hover:bg-green-400 px-4 py-2 my-2 rounded" onClick={handleLogout}>
                         Logout
