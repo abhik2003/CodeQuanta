@@ -10,7 +10,7 @@ export default function Login() {
     const [pwd, setPwd] = useState(true)
     const [status, setStatus] = useState([false, ''])
     const [loading, setLoading] = useState(false)
-    const url=process.env.REACT_APP_API
+    const url = process.env.REACT_APP_API
     const [details, setDetails] = useState({
         'email': '',
         'password': ''
@@ -64,21 +64,25 @@ export default function Login() {
             if (result.status === 200) {
                 setLoading(false)
                 login(result.data)
-                
+
                 navigate('/problems')
-                
+
             }
             else {
-                const data = result.data
-                setStatus([true, data.message])
+                let data = ''
+                if (result.data)
+                    data = result.data.message
+                else
+                    data = result.message
+                setStatus([true, data])
             }
 
 
         }).catch((error) => {
-            console.log(error.response.data)
+            console.log(error.response)
             setLoading(false)
 
-            if (error.response.data)
+            if (error.response?.data?.message)
                 setStatus([true, error.response.data.message])
             else
                 setStatus([true, error.message])
@@ -91,78 +95,78 @@ export default function Login() {
     }
     return (
         <>
-        
-        <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-white">
-            <div className="bg-blue-700 rounded-lg shadow-lg w-4/5 md:w-1/2 xl:w-1/3 max-w-4xl flex flex-col md:flex-row">
-                <div className="w-full bg-white p-4  rounded-lg flex items-center flex-col">
-                    {/* <h1 className="text-2xl  mb-6 text-center">Sign In</h1> */}
-                    <img src={`${process.env.PUBLIC_URL}/logo.png`} className='mb-8' height={150} width={150} alt="here" />
-                    {/* <hr className="bg-white w-full mb-6" /> */}
 
-                    <form className="w-full flex flex-col items-center" onSubmit={handleSubmit}>
-                        <div className="mb-8 w-full flex  pl-4 items-center">
-                            <label className="block text-white mb-2 text-xl" htmlFor="email">
-                                <MailIcon className="h-7 w-7  text-gray-500 inline-block mr-2 " />
-                                
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={details.email}
-                                onChange={handleChange}
-                                placeholder="Email"
-                                className="w-3/4 h-12 px-3 py-2 rounded border
+            <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-white">
+                <div className="bg-blue-700 rounded-lg shadow-lg w-4/5 md:w-1/2 xl:w-1/3 max-w-4xl flex flex-col md:flex-row">
+                    <div className="w-full bg-white p-4  rounded-lg flex items-center flex-col">
+                        {/* <h1 className="text-2xl  mb-6 text-center">Sign In</h1> */}
+                        <img src={`${process.env.PUBLIC_URL}/logo.png`} className='mb-8' height={150} width={150} alt="here" />
+                        {/* <hr className="bg-white w-full mb-6" /> */}
+
+                        <form className="w-full flex flex-col items-center" onSubmit={handleSubmit}>
+                            <div className="mb-8 w-full flex  pl-4 items-center">
+                                <label className="block text-white mb-2 text-xl" htmlFor="email">
+                                    <MailIcon className="h-7 w-7  text-gray-500 inline-block mr-2 " />
+
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={details.email}
+                                    onChange={handleChange}
+                                    placeholder="Email"
+                                    className="w-3/4 h-12 px-3 py-2 rounded border
                                 hover:bg-gray-200
                                 border-blue-100 focus:outline-none focus:text-black"
-                                required
-                            />
-                        </div>
-                        <div className="mb-4 w-full flex pl-4 items-center">
-                            <label className="block text-white mb-2 text-xl" htmlFor="password">
-                                <LockClosedIcon className="h-7 w-7 inline-block mr-2 text-gray-500" />
-                            </label>
-                            <input
-                                type={pwd ? 'password' : 'text'}
-                                name="password"
-                                value={details.password}
-                                onChange={handleChange}
-                                placeholder="Password"
-                                className="w-3/4 px-3 
+                                    required
+                                />
+                            </div>
+                            <div className="mb-4 w-full flex pl-4 items-center">
+                                <label className="block text-white mb-2 text-xl" htmlFor="password">
+                                    <LockClosedIcon className="h-7 w-7 inline-block mr-2 text-gray-500" />
+                                </label>
+                                <input
+                                    type={pwd ? 'password' : 'text'}
+                                    name="password"
+                                    value={details.password}
+                                    onChange={handleChange}
+                                    placeholder="Password"
+                                    className="w-3/4 px-3 
                                 border h-12
                                 py-2 rounded 
                                 hover:bg-gray-200   border-blue-100 focus:outline-none focus:border-blue-400"
-                                required
-                            />
-                            <div className="pl-4 flex items-center cursor-pointer" onClick={togglePwd}>
-                                {pwd ? <EyeIcon className="h-5 w-5 inline-block mr-2 text-black" /> : <EyeOffIcon className="h-5 w-5 inline-block mr-2 text-black" />}
+                                    required
+                                />
+                                <div className="pl-4 flex items-center cursor-pointer" onClick={togglePwd}>
+                                    {pwd ? <EyeIcon className="h-5 w-5 inline-block mr-2 text-black" /> : <EyeOffIcon className="h-5 w-5 inline-block mr-2 text-black" />}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className={`status mb-4 text-center text-${status[0] ? 'red-900' : 'green-600'} h-8`}>
-                            {status[1]}
-                        </div>
-                        <div className="flex justify-center w-full px-8">
-                            <button
-                                type="submit"
-                                className="w-1/2 text-xl
+                            <div className={`status mb-4 text-center text-${status[0] ? 'red-900' : 'green-600'} h-8`}>
+                                {status[1]}
+                            </div>
+                            <div className="flex justify-center w-full px-8">
+                                <button
+                                    type="submit"
+                                    className="w-1/2 text-xl
                                 
                                 bg-gradient-to-r
                                 from-gray-700 to-gray-500
                                 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 flex items-center justify-center"
-                            >
-                                {loading && <Loader size={24} />} 
-                                
-                                Sign In
-                            </button>
-                        </div>
+                                >
+                                    {loading && <Loader size={24} />}
 
-                        <div className="link flex text-gray-500  mt-4 text-md pl-4">
-                            Don't have an account? <Link className="text-indigo-700 underline hover:text-indigo-300 ml-1" to="/register">Register</Link>
-                        </div>
-                    </form>
+                                    Sign In
+                                </button>
+                            </div>
+
+                            <div className="link flex text-gray-500  mt-4 text-md pl-4">
+                                Don't have an account? <Link className="text-indigo-700 underline hover:text-indigo-300 ml-1" to="/register">Register</Link>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
         </>
     )
 }
