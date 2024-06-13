@@ -1,15 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CodingArea from "./CodingArea";
 import CustomInput from "./CustomInput";
 import ResultWindow from "./ResultWindow";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../AuthContextProvider/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 function ProblemCodeEditor({ problem_id }) {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
+  const [user_id, setUserId] = useState("");
   const base_url = process.env.REACT_APP_API;
+
+  const { isAuthenticated } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   const generateSubmissionId = () => {
     const timestamp = Date.now();
@@ -45,9 +52,9 @@ function ProblemCodeEditor({ problem_id }) {
       problem_id,
       code,
       extension,
-      user_id: "100",
+      user_id
     };
-    // console.log(request);
+    console.log(request);
     const { data } = await axios.post(`${base_url}submit-answer`, request);
     if (data?.status) {
       toast.success(data.verdict);
@@ -57,6 +64,15 @@ function ProblemCodeEditor({ problem_id }) {
     }
     console.log(data);
   };
+
+  useEffect(() => {
+    if (!isAuthenticated[0]) {
+      console.log("here");
+      // navigate("/login");
+      return;
+    }
+    setUserId(isAuthenticated[1]?.id);
+  }, [isAuthenticated]);
 
   return (
     <div>

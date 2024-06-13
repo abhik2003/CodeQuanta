@@ -3,6 +3,7 @@ import CodeEditor from "./CodeEditor";
 import "./Compiler.css";
 import axios from "axios";
 import Console from "./Console";
+import Navbar from "../Navbar/Navbar";
 function Compiler() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
@@ -37,21 +38,24 @@ function Compiler() {
     console.log(data);
   };
   return (
-    <div class="compiler-main">
-      <div class="row">
-        <div className="col-9 compiler-left">
-          <CodeEditor submitHandler={submitHandler} input={input} />
-        </div>
-        <div className="col-3 compiler-right">
-          <Console
-            input={input}
-            setInput={setInput}
-            output={output}
-            error={error}
-          />
+    <>
+      <Navbar />
+      <div class="compiler-main">
+        <div class="row">
+          <div className="col-9 compiler-left">
+            <CodeEditor submitHandler={submitHandler} input={input} />
+          </div>
+          <div className="col-3 compiler-right">
+            <Console
+              input={input}
+              setInput={setInput}
+              output={output}
+              error={error}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -11,6 +11,7 @@ def addSubmission(data, submissions):
     
     try:
         data['problem_id'] = ObjectId(data['problem_id'])
+        data['user_id'] = ObjectId(data['user_id'])
         sub_id = submissions.insert_one(data).inserted_id
         sub_id = str(sub_id)
         return {'code':200, 'submission_id': sub_id}
@@ -47,6 +48,8 @@ def updateVerdict(data, submissions):
 def getAllSubmissionUser(user_id, page, count, submissions):
     if user_id is None:
         return jsonify({"messae": "User id is missing"}), 400
+    
+    user_id = ObjectId(user_id)
     all_sub=[]
     try:
         if page is None:
@@ -55,7 +58,50 @@ def getAllSubmissionUser(user_id, page, count, submissions):
             page -=1
         if count is None:
             count = 10
-        submissions_=list(submissions.find({"user_id": user_id},{}).sort("timestamp", -1).skip(page*count).limit(count))
+
+        pipeline = [
+            {
+                '$match': {
+                    'user_id': user_id,
+                }
+            },
+            {
+                '$sort': {
+                    'timestamp': -1
+                }
+            },
+            {
+                '$skip': page*count
+            },
+            {
+                '$limit': count
+            },
+            {
+                '$lookup': {
+                    'from': 'problems',
+                    'localField': 'problem_id',
+                    'foreignField': '_id',
+                    'as': 'problem_details'
+                }
+            },
+            {
+                '$unwind': '$problem_details'
+            },
+            {
+                '$project': {
+                    'code': 1,
+                    'extension': 1,
+                    'verdict': 1,
+                    'status': 1,
+                    'timestamp': 1,
+                    "problem_id":1,
+                    'user_id':1,
+                    'problem_name': '$problem_details.statement'
+                }
+            }
+        ]
+
+        submissions_ = list(submissions.aggregate(pipeline))
         all_sub = [
             {
                 "id": str(sub["_id"]),
@@ -65,7 +111,8 @@ def getAllSubmissionUser(user_id, page, count, submissions):
                 "extension": sub["extension"],
                 "verdict": sub["verdict"],
                 "status": sub["status"],
-                "timestamp": sub["timestamp"]
+                "timestamp": sub["timestamp"],
+                "problem_name": sub["problem_name"]
             }
 
             for sub in submissions_
@@ -81,8 +128,45 @@ def getAllSubmissionUserProblem(user_id, problem_id, submissions):
     if problem_id is None:
         return jsonify({"messae": "Problem id is missing"}), 400
     try:
-        problem_id = ObjectId(problem_id)
-        submissions_=list(submissions.find({"user_id": user_id, "problem_id":problem_id},{}).sort("timestamp", -1))
+            
+        pipeline = [
+            {
+                '$match': {
+                    'user_id': ObjectId(user_id),
+                    'problem_id': ObjectId(problem_id)
+                }
+            },
+            {
+                '$sort': {
+                    'timestamp': -1
+                }
+            },
+            {
+                '$lookup': {
+                    'from': 'problems',
+                    'localField': 'problem_id',
+                    'foreignField': '_id',
+                    'as': 'problem_details'
+                }
+            },
+            {
+                '$unwind': '$problem_details'
+            },
+            {
+                '$project': {
+                    'code': 1,
+                    'extension': 1,
+                    'verdict': 1,
+                    'status': 1,
+                    'timestamp': 1,
+                    "problem_id":1,
+                    'user_id':1,
+                    'problem_name': '$problem_details.statement'
+                }
+            }
+        ]
+
+        submissions_ = list(submissions.aggregate(pipeline))
         all_sub = [
             {
                 "id": str(sub["_id"]),
@@ -92,7 +176,8 @@ def getAllSubmissionUserProblem(user_id, problem_id, submissions):
                 "extension": sub["extension"],
                 "verdict": sub["verdict"],
                 "status": sub["status"],
-                "timestamp": sub["timestamp"]
+                "timestamp": sub["timestamp"],
+                "problem_name": sub["problem_name"]
             }
 
             for sub in submissions_

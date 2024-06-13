@@ -21,7 +21,7 @@ function App() {
       <Route exact path='/admin' element={<AdminPanel/>} />
 
       
-      <Route exact path='/' element={<Compiler/>}/>
+      <Route exact path='/compiler' element={<Compiler/>}/>
       <Route exact path='/problem/:id' element={<Problem/>}/>
     </Routes>
     </BrowserRouter>

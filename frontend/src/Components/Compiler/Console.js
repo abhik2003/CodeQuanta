@@ -15,6 +15,7 @@ function Console({ input, setInput, output, error }) {
               height: "45vh",
               resize: "none",
               overflow: "scroll",
+              border: "1px solid rgb(223, 226, 230)",
             }}
           />
         </div>
@@ -30,6 +31,7 @@ function Console({ input, setInput, output, error }) {
               height: "45vh",
               resize: "none",
               overflow: "scroll",
+              border: "1px solid rgb(223, 226, 230)",
             }}
             readOnly
           />

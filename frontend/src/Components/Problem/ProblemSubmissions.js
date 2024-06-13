@@ -1,27 +1,22 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import formatTimestamp from "./formatTimeStamp";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
+import Submissions from "../Submissions/Submissions";
+import { AuthContext } from "../../AuthContextProvider/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 function ProblemSubmissions({ problem_id, problem_name }) {
   const [submissions, setSubmissions] = useState([]);
   const base_url = process.env.REACT_APP_API;
-  const [viewSub, setViewSub] = useState('');
+  const [user_id, setUserId] = useState("");
   
-  const [clipboardValue, setClipboardValue] = useState("");
-  const handleCopy = () => {
-    toast.success("Source code copied to cloipboard")
-  };
+  const { isAuthenticated } = useContext(AuthContext);
 
-  const languageMap = {
-    cpp: "C++",
-    py: "Python",
-    c: "C",
-  };
+  const navigate = useNavigate();
 
   const getSubmissions = async () => {
-    const user_id = "100"; //cuurently for testing purpose, it will be fetched from context
     const { data } = await axios.post(
       `${base_url}get-submissions-user-problem`,
       { problem_id, user_id }
@@ -30,92 +25,19 @@ function ProblemSubmissions({ problem_id, problem_name }) {
   };
 
   useEffect(() => {
-    if (problem_id) getSubmissions();
-  }, [problem_id]);
+    if (problem_id && user_id) getSubmissions();
+  }, [problem_id, user_id]);
+
+  useEffect(() => {
+    if (!isAuthenticated[0]) {
+      navigate("/problems");
+      return;
+    }
+    setUserId(isAuthenticated[1]?.id);
+  }, [isAuthenticated]);
 
   return (
-    <div>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Language</th>
-            <th scope="col">Status</th>
-            <th scope="col">Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          {submissions.map((submission, index) => (
-            <tr
-              key={submission.id}
-              onClick={() => {
-                // console.log(submission.id);
-                setViewSub(submission);
-                setClipboardValue(submission.code);
-              }}
-              style={{ cursor: "pointer" }}
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              <td>{index + 1}</td>
-              <td>{languageMap[submission.extension]}</td>
-              {submission.status ? (
-                <td style={{ color: "green" }}>{submission.verdict}</td>
-              ) : (
-                <td style={{ color: "red" }}>{submission.verdict}</td>
-              )}
-              <td>{formatTimestamp(submission.timestamp)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div
-        class="modal fade"
-        id="exampleModal"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog" style={{ maxWidth: "80vw" }}>
-          <div class="modal-content" style={{ width: "max-content", maxWidth: "100%", overflowX: "auto", margin: "auto" }}>
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">
-                Problem : {` ${problem_name}, `}
-                Status :{" "}
-                {viewSub?.status ? (
-                  <span style={{ color: "green" }}>{viewSub?.verdict}</span>
-                ) : (
-                  <span style={{ color: "red" }}>{viewSub?.verdict}</span>
-                )}
-                {`,  Language : ${languageMap[viewSub?.extension]}`}
-              </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <pre>{viewSub?.code}</pre>
-            </div>
-            <div class="modal-footer">
-              <CopyToClipboard text={clipboardValue} onCopy={handleCopy}>
-                <button className="btn copy-btn">Copy</button>
-              </CopyToClipboard>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Submissions submissions={submissions}/>
   );
 }
 

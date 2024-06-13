@@ -55,8 +55,9 @@ export default function Navbar() {
 
                     {isAuthenticated[0] && isAuthenticated[1].admin === 1 &&
                         <Link to="/admin" className={`text-gray-400 hover:text-white ${location.pathname === '/admin' ? "border-b-2 " : ""}`}>Admin</Link>
-                    }
+                        }
 
+                    <Link to="/compiler" className={`text-gray-400 hover:text-white ${location.pathname === '/compiler' ? "border-b-2 " : ""}`}>Compiler</Link>
 
                 </div>
 

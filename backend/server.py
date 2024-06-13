@@ -207,6 +207,7 @@ def submitAnswer():
 def getAllSubmissionUser():
     try:
         req = request.json
+        print(req)
         user_id = req.get('user_id')
         page = req.get('page')
         count = req.get('count')
