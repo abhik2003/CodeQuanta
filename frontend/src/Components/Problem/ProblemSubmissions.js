@@ -12,7 +12,7 @@ function ProblemSubmissions({ problem_id, problem_name }) {
   const base_url = process.env.REACT_APP_API;
   const [user_id, setUserId] = useState("");
   
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated,loaded } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -29,15 +29,17 @@ function ProblemSubmissions({ problem_id, problem_name }) {
   }, [problem_id, user_id]);
 
   useEffect(() => {
-    if (!isAuthenticated[0]) {
+    if (loaded && !isAuthenticated[0]) {
       navigate("/problems");
       return;
     }
+    
     setUserId(isAuthenticated[1]?.id);
-  }, [isAuthenticated]);
+  }, [loaded,isAuthenticated]);
 
   return (
     <Submissions submissions={submissions}/>
+    
   );
 }
 

@@ -8,6 +8,7 @@ function Compiler() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
+  const [loading,setLoading]=useState(false)
   const base_url = process.env.REACT_APP_API;
 
   const generateSubmissionId = () => {
@@ -17,6 +18,7 @@ function Compiler() {
   };
 
   const submitHandler = async (code, input, extension) => {
+    setLoading(true)
     const request = {
       code,
       input,
@@ -29,10 +31,13 @@ function Compiler() {
     if (data?.status) {
       setOutput(data.verdict);
       setError("");
+      setLoading(false)
       // console.log("Output set");
     } else {
       setOutput("");
       setError(data.verdict);
+      setLoading(false)
+
     }
 
     console.log(data);
@@ -40,12 +45,12 @@ function Compiler() {
   return (
     <>
       <Navbar />
-      <div class="compiler-main">
-        <div class="row">
-          <div className="col-9 compiler-left">
-            <CodeEditor submitHandler={submitHandler} input={input} />
+      <div class="compiler-main w-full">
+        <div class="flex justify-center bg-gray-100 p-1">
+          <div className="w-3/4 compiler-left ">
+            <CodeEditor submitHandler={submitHandler} input={input} loading={loading} />
           </div>
-          <div className="col-3 compiler-right">
+          <div className="w-1/4 compiler-right">
             <Console
               input={input}
               setInput={setInput}

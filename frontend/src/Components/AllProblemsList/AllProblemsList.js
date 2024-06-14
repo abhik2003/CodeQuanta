@@ -8,7 +8,7 @@ import Footer from '../Footer/Footer';
 export default function AllProblemsList() {
     const [problems, setProblems] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
-    const navigate=useNavigate()
+    const navigate = useNavigate()
 
     const url = process.env.REACT_APP_API
 
@@ -42,56 +42,58 @@ export default function AllProblemsList() {
         'Hard': 'text-red-600',
         'Medium': 'text-yellow-300',
     }
-    const navigateToProblem=(id)=>{
-        navigate(`/problem/${id}`)
+    const navigateToProblem = (id) => {
+        // navigate(`/problem/${id}`)
+        const url = `/problem/${id}`;
+        window.open(url, '_blank', 'noopener,noreferrer')
     }
-    
+
 
     return (
         <>
-        <Navbar/>
-        <div className="min-h-screen flex items-start justify-center bg-gray-100 pt-8">
-            <div className="overflow-x-scroll md:w-3/4 bg-white rounded-lg p-6">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sl.No.</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {problems.map((item, index) => (
-
-                            <tr key={item.id} className={`hover:bg-gray-200 ${index % 2 === 0 ? 'bg-gray-100' : ''}`} onClick={()=>{navigateToProblem(item.id)}}>
-                                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-gray-500">{index + 1}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-md font-bold text-black-500">{item.statement}</td>
-                                <td className={`px-6 py-4 whitespace-nowrap text-md font-bold ${diff[item.difficulty]}`}>{item.difficulty}</td>
+            <Navbar />
+            <div className="min-h-screen flex items-start justify-center bg-gray-100 pt-8">
+                <div className="overflow-x-scroll md:w-3/4 bg-white rounded-lg p-6">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sl.No.</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Difficulty</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            {problems.map((item, index) => (
 
-                        ))}
-                    </tbody>
-                </table>
-                <div className="mt-4 flex justify-between w-full">
-                    <button
-                        onClick={handlePrevious}
-                        className={`px-4 py-2 bg-gray-400 text-gray-100 rounded ${currentPage === 0 ? '' : 'hover:bg-gray-200'}`}
-                        disabled={currentPage === 0}
-                    >
-                        Previous
-                    </button>
-                    <button
-                        onClick={handleNext}
-                        className={`px-4 py-2 bg-gray-500 text-gray-100 rounded ${problems.length === 0 ? '' : 'hover:bg-gray-200'}`}
-                        disabled={problems.length === 0}
-                    >
-                        Next
-                    </button>
+                                <tr key={item.id} className={`hover:bg-gray-200 ${index % 2 === 0 ? 'bg-gray-100' : ''}`} onClick={() => { navigateToProblem(item.id) }}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-gray-500">{index + 1}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-md font-bold text-black-500 cursor-pointer">{item.statement}</td>
+                                    <td className={`px-6 py-4 whitespace-nowrap text-md font-bold ${diff[item.difficulty]}`}>{item.difficulty}</td>
+                                </tr>
+
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="mt-4 flex justify-between w-full">
+                        <button
+                            onClick={handlePrevious}
+                            className={`px-4 py-2 bg-gray-400 text-gray-100 rounded ${currentPage === 0 ? '' : 'hover:bg-gray-200'}`}
+                            disabled={currentPage === 0}
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={handleNext}
+                            className={`px-4 py-2 bg-gray-500 text-gray-100 rounded ${problems.length === 0 ? '' : 'hover:bg-gray-200'}`}
+                            disabled={problems.length === 0}
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <hr />
-        <Footer/>
+            <hr />
+            <Footer />
         </>
     )
 }
