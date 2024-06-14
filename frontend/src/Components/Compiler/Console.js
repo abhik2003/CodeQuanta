@@ -2,37 +2,42 @@ import React from "react";
 
 function Console({ input, setInput, output, error }) {
   return (
-    <div>
-      <div>
-        <h4>Input</h4>
-        <div>
+    <div className=" border-2 border-gray-500 mt-2 rounded ">
+      <div className="  p-2 my-2 border-b-2 border-gray-500 ">
+        <h4 className="text-xl font-bold text-center  p-2 rounded-top  ">Input</h4>
+        <div className="flex justify-center p-1  ">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             style={{
               width: "100%",
               padding: "5px",
-              height: "45vh",
+              height: "34vh",
               resize: "none",
               overflow: "scroll",
-              border: "1px solid rgb(223, 226, 230)",
-            }}
+              background:"transparent",
+              }
+            }
+            className="border-2 border-gray-500"
+            
           />
         </div>
       </div>
-      <div>
-        <h4>Output</h4>
-        <div>
+      <div className="p-2  my-2">
+        <h4 className="text-xl font-bold text-center p-2 rounded-top ">Output</h4>
+        <div className="flex justify-center p-1  ">
           <textarea
             value={error ? error : output}
             style={{
               width: "100%",
               padding: "5px",
-              height: "45vh",
+              height: "33vh",
               resize: "none",
               overflow: "scroll",
-              border: "1px solid rgb(223, 226, 230)",
+              background:"transparent",
+              
             }}
+            className={`border-2 border-gray-500 text-${error?'red-500':'black'}`}
             readOnly
           />
         </div>

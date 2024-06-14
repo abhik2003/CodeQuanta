@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState([false]);
-
+  const [loaded,setLoaded]=useState(false)
   const login = (data) => {
     console.log(data)
     localStorage.setItem('CQ_token', data.user.token)
@@ -28,17 +28,20 @@ const AuthProvider = ({ children }) => {
         console.log(result.data)
         const { user } = result.data
         setIsAuthenticated([true, user])
+        setLoaded(true)
       }).catch((error) => {
         console.log(error.response)
+        setLoaded(true)
       })
 
     }
   }
   useEffect(() => {
-    fetchdatalogin()
+    
+  fetchdatalogin()
   }, [])
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, login, logout,loaded }}>
       {children}
     </AuthContext.Provider>
   );

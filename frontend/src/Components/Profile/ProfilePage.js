@@ -6,7 +6,7 @@ import axios from 'axios'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
 import Footer from '../Footer/Footer'
 import Submissions from '../Submissions/Submissions'
-
+import Loader from '../Loader/Loader';
 export default function ProfilePage() {
     const [user, setUser] = useState(
         {
@@ -17,61 +17,68 @@ export default function ProfilePage() {
                 'medium': 0,
                 'hard': 0
             },
-            'submissions':[],
-            'totalProblems':1
+            'submissions': [],
+            'totalProblems': 1
         }
     )
     const [user_id, setUserId] = useState("")
-    const navigate=useNavigate()
+    const navigate = useNavigate()
 
     let percentage = (user?.solvedCount.easy + user?.solvedCount.medium + user?.solvedCount.hard) * 100 / user?.totalProblems
     if (percentage === null) {
         percentage = 50
     }
 
-    const { isAuthenticated } = useContext(AuthContext)
+    const { isAuthenticated, loaded } = useContext(AuthContext)
     const url = process.env.REACT_APP_API
-    
+
 
     const getUser = () => {
-        if(isAuthenticated[0])
-        axios.post(`${url}user-profile`, { 'email': isAuthenticated[1].email }).then((result) => {
-            // console.log(result.data)
-            setUser(result.data)
-        }).catch((error) => {
-            console.log(error)
-        })
+        if (isAuthenticated[0])
+            axios.post(`${url}user-profile`, { 'email': isAuthenticated[1].email }).then((result) => {
+                // console.log(result.data)
+                setUser(result.data)
+            }).catch((error) => {
+                console.log(error)
+            })
     }
     const [submissions, setSubmissions] = useState([]);
     const base_url = process.env.REACT_APP_API;
 
     const getSubmissions = async () => {
-    //   const user_id = user?.user_id; //cuurently for testing purpose, it will be fetched from context
-      const { data } = await axios.post(
-        `${base_url}get-submissions-user-all`,
-        { user_id }
-      );
+        //   const user_id = user?.user_id; //cuurently for testing purpose, it will be fetched from context
+        const { data } = await axios.post(
+            `${base_url}get-submissions-user-all`,
+            { user_id }
+        );
         console.log(data);
-      setSubmissions(data?.submissions);
+        setSubmissions(data?.submissions);
     };
 
     useEffect(() => {
-        if(user_id)getSubmissions();
+        if (user_id) getSubmissions();
     }, [user_id])
-    
+    console.log(loaded)
     useEffect(() => {
-        if(!isAuthenticated[0]){
+        if (loaded && !isAuthenticated[0]) {
             navigate('/problems')
             return
         }
         setUserId(isAuthenticated[1]?.id);
         getUser();
-        
-    }, [isAuthenticated])
+
+    }, [loaded])
     return (
         <>
             <Navbar />
-            <div className="flex flex-col lg:flex-row  p-4 bg-gray-100">
+
+            {!loaded &&
+                <div className="h-48 flex justify-center items-center">
+                    <Loader size={96} />
+                </div>
+            }
+
+            {loaded && <div className="flex flex-col lg:flex-row  p-4 bg-gray-100">
                 {/* Left Side: User Info */}
                 <div className="w-full lg:w-1/3 p-4 bg-gray-200 rounded-lg shadow-md mb-4 lg:mb-0">
                     <div className="flex flex-col items-center">
@@ -80,7 +87,7 @@ export default function ProfilePage() {
                             alt="Profile"
                             className="rounded-full w-48 h-48 mb-4"
                         />
-                        <h1 className="text-2xl font-bold mb-2">{user?.name ? user?.name:'Krish'}</h1>
+                        <h1 className="text-2xl font-bold mb-2">{user?.name ? user?.name : 'Krish'}</h1>
                         <p className="text-gray-600">{user?.email}</p>
                     </div>
                 </div>
@@ -106,14 +113,14 @@ export default function ProfilePage() {
                     <div className="p-4 mt-8 bg-white rounded-lg shadow-md h-96 overflow-auto">
                         <h2 className="text-xl font-bold mb-2">Previous Submissions</h2>
 
-                        <Submissions submissions={submissions}/>
+                        <Submissions submissions={submissions} />
 
 
                     </div>
                 </div>
-            </div>
+            </div>}
             <hr />
-            <Footer/>
+            <Footer />
         </>
     )
 }

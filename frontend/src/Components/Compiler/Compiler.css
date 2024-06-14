@@ -5,14 +5,12 @@
 }
 
 .compiler-left {
-  height: 100vh;
-  border: 1px solid red;
+  /* height: 100vh; */
+  /* border: 1px solid red; */
   /* overflow-y: scroll; */
   position: relative;
 }
-.compiler-right {
-  border: 1px solid red;
-}
+
 
 .run-btn {
   margin-left: 20px;
@@ -20,10 +18,14 @@
   color: white;
   border: 1 px solid black !important;
   border-radius: 5px;
-  padding: 6px;
+  padding: 10px;
   padding-left: 20px;
   padding-right: 20px;
   cursor: pointer;
-  position: absolute;
-  right: 20px;
+  
+
 }
+.loading-now{
+  background-color: rgba(25, 40, 115, 0.622)
+}
+

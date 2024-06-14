@@ -3,6 +3,7 @@ import Navbar from '../Navbar/Navbar'
 import Footer from '../Footer/Footer'
 import axios from 'axios'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
+import Loader from '../Loader/Loader'
 
 export default function AdminPanel() {
     const [userBeingAddedEmail, setUserBeingAddedEmail] = useState('')
@@ -43,7 +44,7 @@ export default function AdminPanel() {
     }
 
     const url = process.env.REACT_APP_API
-    const { isAuthenticated } = useContext(AuthContext)
+    const { isAuthenticated, loaded } = useContext(AuthContext)
     const changeAdmin = (e) => {
         setUserBeingAddedEmail(e.target.value)
     }
@@ -81,7 +82,7 @@ export default function AdminPanel() {
 
         axios.post(`${url}add-problems`, {
             ...questions,
-            'id':isAuthenticated[1].id
+            'id': isAuthenticated[1].id
         }).then((result) => {
             setQuestions({
                 "statement": '',
@@ -94,11 +95,11 @@ export default function AdminPanel() {
                     'code': '',
                     'language': ''
                 },
-                
+
             })
             alert('question added successfully')
-        }).catch((error)=>{
-            setQuestionStatus([true,error.message])
+        }).catch((error) => {
+            setQuestionStatus([true, error.message])
         })
     }
     const increaseTestCase = () => {
@@ -127,7 +128,12 @@ export default function AdminPanel() {
     return (
         <div>
             <Navbar />
-            <div className=" mt-8 flex flex-col items-center justify-center">
+            {!loaded &&
+                <div className="h-48 flex justify-center items-center">
+                    <Loader size={96} />
+                </div>
+            }
+            {loaded && <div className=" mt-8 flex flex-col items-center justify-center">
                 <div className="form1 my-8 admin-addition p-4 flex  shadow rounded mx-2 md:mx-0">
                     <form action="" className='flex flex-col justify-center' onSubmit={handleAddAdmin}>
 
@@ -258,7 +264,7 @@ export default function AdminPanel() {
                         }
                     </form>
                 </div>
-            </div>
+            </div>}
             {/* <Footer /> */}
         </div>
     )
