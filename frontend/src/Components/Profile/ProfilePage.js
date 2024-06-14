@@ -36,7 +36,7 @@ export default function ProfilePage() {
     const getUser = () => {
         if (isAuthenticated[0])
             axios.post(`${url}user-profile`, { 'email': isAuthenticated[1].email }).then((result) => {
-                // console.log(result.data)
+                console.log("User",result.data)
                 setUser(result.data)
             }).catch((error) => {
                 console.log(error)

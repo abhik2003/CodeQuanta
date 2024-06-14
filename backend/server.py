@@ -193,6 +193,11 @@ def submitAnswer():
                     'status': int(res['status'])
                 }
                 update_res = Submissions.updateVerdict(data, submissions)
+                
+                if res['status']: #if Accepted sol then add it to the users' solved problem list
+                    solvedProbUpdate_res = Submissions.updateUserSolvedProblem(problem_id, user_id, user, problems)
+                    
+                
                 if update_res['code'] == 200:
                     return jsonify(res), 200
                 else:

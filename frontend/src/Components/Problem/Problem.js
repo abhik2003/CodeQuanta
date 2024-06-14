@@ -11,15 +11,18 @@ import Loader from "../Loader/Loader";
 function Problem() {
   const [problem, setProblem] = useState(null);
   const [problem_id, setProblemId] = useState(null);
+
   const params = useParams();
   const base_url = process.env.REACT_APP_API;
-  console.log(base_url, "    ", params.id)
+
   const getProblem = async () => {
     const { data } = await axios.post(`${base_url}get-question`, { "id": params.id });
     setProblem(data?.question);
     setProblemId(data?.question?.id);
   }
-  const { loaded } = useContext(AuthContext)
+
+  const { loaded } = useContext(AuthContext);
+  
   useEffect(() => {
     if (params?.id) getProblem();
   }, [params?.id])

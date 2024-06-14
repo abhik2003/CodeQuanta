@@ -185,3 +185,32 @@ def getAllSubmissionUserProblem(user_id, problem_id, submissions):
         return jsonify({'submissions':all_sub}), 200
     except Exception as err:
         return jsonify({'message':str(err)}), 500
+    
+def updateUserSolvedProblem(problem_id, user_id, user, problems):
+    try:
+        problem_id=ObjectId(problem_id)
+        user_id=ObjectId(user_id)
+        
+        update_operation = {
+            '$addToSet': {
+                'solved': problem_id
+            }
+        }
+        result = user.update_one({'_id': user_id}, update_operation)
+        
+        if result.modified_count > 0: #updated
+            problem = problems.find_one({'_id': problem_id}, {'difficulty': 1, '_id': 0})
+            if problem:
+                diff = problem['difficulty'].lower()
+                if diff not in ['easy', 'medium', 'hard']:
+                    return jsonify({'message': "Invalid difficluty"}), 500
+                result = user.update_one(
+                    {'_id': user_id},
+                    {'$inc': {f'solvedCount.{diff}': 1}}
+                )
+                
+        return jsonify({'message': "Solved count updated"}), 200
+            
+        pass
+    except Exception as err:
+        return jsonify({'message':str(err)}), 500

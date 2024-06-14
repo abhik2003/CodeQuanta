@@ -11,17 +11,17 @@ export default function AdminPanel() {
     const [questionStatus, setQuestionStatus] = useState([false])
 
     const [questions, setQuestions] = useState({
-        "statement": '',
-        "description": '',
-        "test_cases": [
-            { 'input': 0 }
+      statement: "",
+      description: "",
+        test_cases: [
+            { input: "" }
         ],
-        "difficulty": '',
-        "checker_code": {
-            'code': '',
-            'language': ''
-        },
-    })
+      difficulty: "",
+      checker_code: {
+        code: "",
+        language: "",
+      },
+    });
     const options = [
         { 'display': 'C++', 'value': 'cpp' },
         { 'display': 'C', 'value': 'c' },
@@ -88,7 +88,7 @@ export default function AdminPanel() {
                 "statement": '',
                 "description": '',
                 "test_cases": [
-                    { 'input': 0 }
+                    { 'input': '' }
                 ],
                 "difficulty": '',
                 "checker_code": {
@@ -105,7 +105,7 @@ export default function AdminPanel() {
     const increaseTestCase = () => {
         let tc = questions.test_cases
 
-        tc.push({ 'input': 0 })
+        tc.push({ input: "" });
 
         setQuestions({ ...questions, test_cases: tc })
     }
@@ -211,12 +211,12 @@ export default function AdminPanel() {
                                     return (
                                         <div className="flex flex-col md:flex-row items-center justify-between my-2">
                                             <label htmlFor="test_case">Input: </label>
-                                            <input
-                                                type="text"
+                                            <textarea
+                                                // type="text"
                                                 name="test_case"
                                                 value={questions.test_cases[index].input}
                                                 onChange={(e) => { handleTestCase(e, index) }}
-                                                placeholder="0"
+                                                placeholder="Put your test case"
                                                 className="w-2/3 h-12 px-3 py-2 rounded border
                                 hover:bg-gray-200 mx-auto md:mx-0
                                 border-blue-100 focus:outline-none focus:text-black"

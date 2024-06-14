@@ -133,11 +133,7 @@ def profile(email, user):
             obj = {
                 'name': myuser.get('name'),
                 'email': myuser.get('email'),
-                'solvedCount': {
-                    'easy':2,
-                    'medium':4,
-                    'hard':0
-                },
+                'solvedCount': myuser.get('solvedCount'),
                 'totalProblems': 10,
                 'submissions': [
                     {'submissionId': '1', 'status': 1, 'verdict': 'Accepted'},
