@@ -77,6 +77,23 @@ def addnewadmin():
     value=Auth.addAdmin(data,admins,user)
     return jsonify(**value),value['code']
 
+#get problem for update by admin
+@app.route('/get-problem-admin',methods=['POST'])
+def gtproblemadmin():
+    data=request.json
+    value=Question.getTotalProblem(problems,data.get('id'))
+    return jsonify(**value),value['code']
+
+#update problem
+@app.route('/update-problem-admin',methods=['POST'])
+def updproblemadmin():
+    data=request.json
+    # print(data)
+    value=Question.updateProblem(problems,data)
+    return jsonify(**value),value['code']
+    # return jsonify(message='ok'),200
+
+
 # Compile the code and get output
 @app.route('/compile', methods=['POST'])
 def compile():
