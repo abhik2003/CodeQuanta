@@ -150,8 +150,7 @@ export default function Login() {
                                     type="submit"
                                     className="w-1/2 text-xl
                                 
-                                bg-gradient-to-r
-                                from-gray-700 to-gray-500
+                                bg-gradient-to-r from-gray-700 to-gray-500
                                 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 flex items-center justify-center"
                                 >
                                     {loading && <Loader size={24} />}

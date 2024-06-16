@@ -43,7 +43,8 @@ def getAllQuestions(problems, page):
             }
             for question in questions
         ]
-        return {'questions': qt, 'code': 200}
+        totalCount=problems.count_documents({})
+        return {'questions': qt, 'code': 200,'totalCount':totalCount}
     except Exception as err:
         return {'code': 500, 'message': str(err)}
 
@@ -85,6 +86,55 @@ def getProblemDetails(problems, id):
     except Exception as err:
         return {'code': 500, 'message': str(err)}
 
+def getTotalProblem(probelms,id):
+    obj={'code':200,'message':''}
+    if(id is None):
+        obj['code']=400
+        obj['message']='Id not found'
+        return obj
+    try:
+        obj_id=ObjectId(id)
+        pb=probelms.find_one({'_id':obj_id},{})
+        if(pb is None):
+            obj['code']=400
+            obj['message']='Id not found'
+            return obj
+        pb['id']=str(pb['_id'])
+        del pb['_id']
+        obj['question']=pb
+        return obj
+    except Exception as err:
+        obj['code']=500
+        obj['message']=str(err)
+        return obj
+
+
+def updateProblem(probelms,data):
+    obj={'code':200,'message':''}
+    if(data.get('id') is None):
+        obj['code']=400
+        obj['message']='Id not found'
+        return obj
+    try:
+        obj_id=ObjectId(data.get('id'))
+        question=data.get('question')
+        question['_id']=obj_id
+        
+        item=probelms.find_one({'_id':obj_id},{})
+        print(item)
+        pb=probelms.replace_one({'_id':obj_id},question)
+        print(pb)
+        if(pb.modified_count>0):
+            obj['message']='Updated question successfully'
+        else:
+            obj['code']=500
+            obj['message']='Question not found'
+        return obj
+    except Exception as err:
+        obj['code']=500
+        obj['message']=str(err)
+        return obj
+
 # {
 #   "statement": "Calculate the Factorial of a Number",
 #   "description": "Given a non-negative integer, your task is to compute its factorial. The factorial of a non-negative integer n is the product of all positive integers less than or equal to n. It is denoted by n!. For example, 5! = 5 × 4 × 3 × 2 × 1 = 120.",
@@ -107,3 +157,25 @@ def getProblemDetails(problems, id):
 #     "language":"python"
 #   }
 # }
+'''
+ {
+        "checker_code": {
+            "code": "def calculate_sum(input_array):\\n    return sum(input_array)",
+            "language": "py"
+        },
+        "description": "Given an array of integers, your task is to calculate the sum of its elements. \nExample:\nInput: [1, 2, 3]\nOutput: 5",
+        "difficulty": "medium",
+        "id": "666ab05a2e8f8388e66f4f73",
+        "statement": "Calculate the Sum of an Array",
+        "test_cases": [
+            {
+                "input": "[1, 2, 3, 4, 5]"
+            },
+            {
+                "input": "[-1, 2, 5]"
+            },
+            {
+                "input": "[5]"
+            }
+        ]
+    }'''
