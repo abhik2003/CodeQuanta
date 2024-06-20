@@ -146,6 +146,20 @@ def getparticularpb():
     # return jsonify(message='ok'),200
 
     return jsonify(**qvalue),qvalue.get('code')
+#Get total problems count
+@app.route('/total-problems-count', methods=['GET'])
+def getTotalProblemsCount():
+    count = Question.getTotalProblemsCount(problems)
+    if count['code']!=200:
+        res = {
+            "message": count.get('message')
+        }
+        return jsonify(res), count.get('code')
+    else:
+        res = {
+            'totalCount' : count['total-count']
+        }
+        return jsonify(res), 200
 
 #Submit problem answer
 @app.route('/submit-answer', methods=['POST'])

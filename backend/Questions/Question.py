@@ -134,6 +134,12 @@ def updateProblem(probelms,data):
         obj['code']=500
         obj['message']=str(err)
         return obj
+def getTotalProblemsCount(problems):
+    try:
+        totalCount=problems.count_documents({})
+        return {'code': 200, 'total-count': totalCount}
+    except Exception as err:
+        return {'code': 500, 'message': str(err)}
 
 # {
 #   "statement": "Calculate the Factorial of a Number",

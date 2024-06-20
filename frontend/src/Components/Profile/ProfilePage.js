@@ -8,6 +8,8 @@ import Footer from '../Footer/Footer'
 import Submissions from '../Submissions/Submissions'
 import Loader from '../Loader/Loader';
 export default function ProfilePage() {
+    const base_url = process.env.REACT_APP_API;
+
     const [user, setUser] = useState(
         {
             'email': 'abc@gmail.com',
@@ -21,13 +23,32 @@ export default function ProfilePage() {
             'totalProblems': 1
         }
     )
+    
     const [user_id, setUserId] = useState("")
     const navigate = useNavigate()
 
-    let percentage = (user?.solvedCount.easy + user?.solvedCount.medium + user?.solvedCount.hard) * 100 / user?.totalProblems
-    if (percentage === null) {
-        percentage = 50
+    const [totalProblems, setTotalProblems] = useState(0);
+    const [percentage, setPercentage] = useState(0);
+
+    const getTotalProblemsCount = async () => {
+        const { data } = await axios.get(`${base_url}total-problems-count`);
+        if (data?.totalCount) setTotalProblems(data?.totalCount);
     }
+    useEffect(() => {
+      getTotalProblemsCount()
+    }, []);
+
+
+    useEffect(() => {
+        let percent = (user?.solvedCount.easy + user?.solvedCount.medium + user?.solvedCount.hard) * 100 / totalProblems
+        if (percent === null) {
+            percent = 50
+        }
+        setPercentage(percent.toFixed(2));  //upto 2 decimal places
+        
+    }, [totalProblems])
+
+
 
     const { isAuthenticated, loaded } = useContext(AuthContext)
     const url = process.env.REACT_APP_API
@@ -43,7 +64,6 @@ export default function ProfilePage() {
             })
     }
     const [submissions, setSubmissions] = useState([]);
-    const base_url = process.env.REACT_APP_API;
 
     const getSubmissions = async () => {
         //   const user_id = user?.user_id; //cuurently for testing purpose, it will be fetched from context
@@ -68,6 +88,8 @@ export default function ProfilePage() {
         getUser();
 
     }, [loaded])
+
+
     return (
         <>
             <Navbar />
