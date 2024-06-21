@@ -4,6 +4,7 @@ from mongoengine import Document, StringField, EmailField, connect, ValidationEr
 import bcrypt
 import datetime
 import jwt
+from bson.objectid import ObjectId
 
 
 # function for creating the token
@@ -125,10 +126,11 @@ def login(recv, user,admins):
         return obj
 
 
-def profile(email, user):
+def profile(id, user):
     obj={'code':200}
+    obj_id=ObjectId(id)
     try:
-        myuser = user.find_one({'email': email})
+        myuser = user.find_one({'_id': obj_id})
         if (myuser is not None):
             obj = {
                 'name': myuser.get('name'),

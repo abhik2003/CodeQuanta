@@ -1,10 +1,26 @@
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
 import axios from 'axios'
+import CodeMirror from "@uiw/react-codemirror";
+import { cpp } from "@codemirror/lang-cpp";
+import { python } from "@codemirror/lang-python";
 
 export default function QuestionAddition() {
+    
     const [questionStatus, setQuestionStatus] = useState([false])
+    const placeHolder = {
+        cpp: "// Start typing your code here\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+        py: "# Start typing your code here\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+        c: "// Start typing your code here\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+    };
+    const [code, setCode] = useState(placeHolder["c"]);
+    const [language, setLanguage] = useState("c");
 
+    const languageMap = {
+        cpp: [cpp()],
+        py: [python()],
+        c: [cpp()],
+    };
     const [questions, setQuestions] = useState({
         statement: "",
         description: "",
@@ -60,7 +76,7 @@ export default function QuestionAddition() {
             return
         }
 
-       
+
         axios.post(`${url}add-problems`, {
             ...questions,
             'id': isAuthenticated[1].id
@@ -196,7 +212,21 @@ export default function QuestionAddition() {
                             ))}
                         </select>
                     </div>
-                    <textarea
+                    <div
+                        style={{ overflow: "scroll", height: "40vh" }}
+                        className="rounded shadow "
+                    >
+                        
+                        <CodeMirror
+                            value={questions.checker_code.code}
+                            extensions={languageMap[language]}
+                            onChange={(value, viewUpdate) => {
+                                setQuestions({ ...questions, checker_code: { 'code': value, 'language': questions.checker_code.language } })
+        
+                            }}
+                        />
+                    </div>
+                    {/* <textarea
 
                         name="checker_code"
                         value={questions.checker_code.code}
@@ -206,7 +236,7 @@ export default function QuestionAddition() {
 
                         className=" w-full px-3 py-2 rounded border hover:bg-gray-200 mx-auto md:mx-0 border-blue-100 focus:outline-none focus:text-black"
                         required
-                    />
+                    /> */}
                 </div>
                 <div className="flex py-2 justify-center">
                     <button className="bg-green-500 text-white p-2 rounded">Submit</button>

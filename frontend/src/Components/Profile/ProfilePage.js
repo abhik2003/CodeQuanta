@@ -1,15 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
 import CircularProgress from './CircularProgress'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Navbar from '../Navbar/Navbar'
 import axios from 'axios'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
 import Footer from '../Footer/Footer'
 import Submissions from '../Submissions/Submissions'
 import Loader from '../Loader/Loader';
+import base64url from 'base64url';
+import { Buffer } from 'buffer';
+
 export default function ProfilePage() {
     const base_url = process.env.REACT_APP_API;
-
+    const params = useParams()
+    global.Buffer = Buffer;
+    
+    const [loading, setLoading] = useState(true)
     const [user, setUser] = useState(
         {
             'email': 'abc@gmail.com',
@@ -23,7 +29,7 @@ export default function ProfilePage() {
             'totalProblems': 1
         }
     )
-    
+
     const [user_id, setUserId] = useState("")
     const navigate = useNavigate()
 
@@ -34,18 +40,17 @@ export default function ProfilePage() {
         const { data } = await axios.get(`${base_url}total-problems-count`);
         if (data?.totalCount) setTotalProblems(data?.totalCount);
     }
-    useEffect(() => {
-      getTotalProblemsCount()
-    }, []);
+    
 
 
     useEffect(() => {
-        let percent = (user?.solvedCount.easy + user?.solvedCount.medium + user?.solvedCount.hard) * 100 / totalProblems
-        if (percent === null) {
-            percent = 50
-        }
+        let val = (user?.solvedCount.easy || 0 + user?.solvedCount.medium || 0 + user?.solvedCount.hard || 0)
+        // console.log(val)
+        // console.log(totalProblems)
+        let percent = ((val) * 100) / totalProblems
+        console.log(percent)
         setPercentage(percent.toFixed(2));  //upto 2 decimal places
-        
+
     }, [totalProblems])
 
 
@@ -54,15 +59,18 @@ export default function ProfilePage() {
     const url = process.env.REACT_APP_API
 
 
-    const getUser = () => {
-        if (isAuthenticated[0])
-            axios.post(`${url}user-profile`, { 'email': isAuthenticated[1].email }).then((result) => {
-                console.log("User",result.data)
-                setUser(result.data)
-            }).catch((error) => {
-                console.log(error)
-            })
+    const getUser = async() => {
+        const id = base64url.decode(params.id)
+        console.log(id)
+        await axios.post(`${url}user-profile`, { 'id': id }).then((result) => {
+            console.log(result.data)
+            console.log("User", result.data)
+            setUser(result.data)
+        }).catch((error) => {
+            console.log(error)
+        })
     }
+    console.log(loading)
     const [submissions, setSubmissions] = useState([]);
 
     const getSubmissions = async () => {
@@ -80,12 +88,13 @@ export default function ProfilePage() {
     }, [user_id])
     console.log(loaded)
     useEffect(() => {
-        if (loaded && !isAuthenticated[0]) {
+        if (!params.id)
             navigate('/problems')
-            return
-        }
-        setUserId(isAuthenticated[1]?.id);
+        setUserId(base64url.decode(params.id));
         getUser();
+        getTotalProblemsCount()
+        setLoading(false)
+
 
     }, [loaded])
 
@@ -94,13 +103,13 @@ export default function ProfilePage() {
         <>
             <Navbar />
 
-            {!loaded &&
+            {loading &&
                 <div className="h-48 flex justify-center items-center">
                     <Loader size={96} />
                 </div>
             }
 
-            {loaded && <div className="flex flex-col lg:flex-row  p-4 bg-gray-100">
+            {!loading && <div className="flex flex-col lg:flex-row  p-4 bg-gray-100">
                 {/* Left Side: User Info */}
                 <div className="w-full lg:w-1/3 p-4 bg-gray-200 rounded-lg shadow-md mb-4 lg:mb-0">
                     <div className="flex flex-col items-center">
@@ -123,9 +132,9 @@ export default function ProfilePage() {
                         <div className="flex justify-center">
                             <CircularProgress percentage={percentage} />
                             <div className="numbers  flex flex-col items-center justify-center w-1/2">
-                                <p className="text-green-500 text-xl font-bold my-2">{user?.solvedCount.easy} Easy</p>
-                                <p className="text-yellow-500 text-xl font-bold my-2">{user?.solvedCount.medium} Medium</p>
-                                <p className="text-red-500 text-xl font-bold my-2">{user?.solvedCount.hard} Hard</p>
+                                <p className="text-green-500 text-xl font-bold my-2">{user?.solvedCount.easy || 0} Easy</p>
+                                <p className="text-yellow-500 text-xl font-bold my-2">{user?.solvedCount.medium || 0} Medium</p>
+                                <p className="text-red-500 text-xl font-bold my-2">{user?.solvedCount.hard || 0} Hard</p>
                             </div>
                         </div>
 

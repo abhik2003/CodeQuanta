@@ -17,7 +17,7 @@ function App() {
       <Route exact path='/login' element={<Login/>} />
       <Route exact path='/register' element={<Register/>} />
       <Route exact path='/problems' element={<AllProblemsList/>} />
-      <Route exact path='/profile' element={<ProfilePage/>} />
+      <Route exact path='/profile/:id' element={<ProfilePage/>} />
       <Route exact path='/admin' element={<AdminPanel/>} />
 
       
