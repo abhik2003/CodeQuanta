@@ -9,7 +9,7 @@ const AuthProvider = ({ children }) => {
   const login = (data) => {
     console.log(data)
     localStorage.setItem('CQ_token', data.user.token)
-    setIsAuthenticated([true, { name: data.user.name, email: data.user.email, id: data.user.id, admin:data.user.admin }]);
+    setIsAuthenticated([true, { name: data.user.name, email: data.user.email, id: data.user.id, admin:data.user.admin, userName:data.user.userName }]);
   };
 
   const logout = () => {

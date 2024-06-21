@@ -7,13 +7,11 @@ import { AuthContext } from '../../AuthContextProvider/AuthProvider'
 import Footer from '../Footer/Footer'
 import Submissions from '../Submissions/Submissions'
 import Loader from '../Loader/Loader';
-import base64url from 'base64url';
-import { Buffer } from 'buffer';
 
 export default function ProfilePage() {
     const base_url = process.env.REACT_APP_API;
     const params = useParams()
-    global.Buffer = Buffer;
+
     
     const [loading, setLoading] = useState(true)
     const [user, setUser] = useState(
@@ -35,7 +33,7 @@ export default function ProfilePage() {
 
     const [totalProblems, setTotalProblems] = useState(0);
     const [percentage, setPercentage] = useState(0);
-
+    console.log(totalProblems)
     const getTotalProblemsCount = async () => {
         const { data } = await axios.get(`${base_url}total-problems-count`);
         if (data?.totalCount) setTotalProblems(data?.totalCount);
@@ -44,6 +42,7 @@ export default function ProfilePage() {
 
 
     useEffect(() => {
+        console.log('came here')
         let val = (user?.solvedCount.easy || 0 + user?.solvedCount.medium || 0 + user?.solvedCount.hard || 0)
         // console.log(val)
         // console.log(totalProblems)
@@ -60,12 +59,13 @@ export default function ProfilePage() {
 
 
     const getUser = async() => {
-        const id = base64url.decode(params.id)
-        console.log(id)
-        await axios.post(`${url}user-profile`, { 'id': id }).then((result) => {
+        
+        await axios.post(`${url}user-profile`, { 'userName': params.userName }).then((result) => {
             console.log(result.data)
             console.log("User", result.data)
             setUser(result.data)
+            setUserId(result.data.id)
+            setLoading(false)
         }).catch((error) => {
             console.log(error)
         })
@@ -88,12 +88,12 @@ export default function ProfilePage() {
     }, [user_id])
     console.log(loaded)
     useEffect(() => {
-        if (!params.id)
+        if (!params.userName)
             navigate('/problems')
-        setUserId(base64url.decode(params.id));
+        
         getUser();
         getTotalProblemsCount()
-        setLoading(false)
+        
 
 
     }, [loaded])
