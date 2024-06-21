@@ -1,9 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
-
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
+import Hashids from 'hashids';
+import base64url from 'base64url';
+import { Buffer } from 'buffer';
 export default function Navbar() {
+    global.Buffer = Buffer;
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation()
     console.log(location.pathname)
@@ -12,6 +15,9 @@ export default function Navbar() {
     };
     const { logout, isAuthenticated, loaded } = useContext(AuthContext)
 
+   
+
+    
     console.log(isAuthenticated)
     const navigate = useNavigate()
 
@@ -24,7 +30,10 @@ export default function Navbar() {
     const handleLogout = () => {
 
         logout()
+        navigate('/login')
     }
+
+    
 
     useEffect(() => {
         if (loaded && location.pathname === '/admin') {
@@ -32,10 +41,11 @@ export default function Navbar() {
                 navigate('/problems')
 
         }
+        
     }, [location, loaded])
     return (
         <>
-             <nav className="bg-gray-800 text-white py-2 px-4  w-full z-50">
+            <nav className="bg-gray-800 text-white py-2 px-4  w-full z-50">
                 <div className="container mx-auto flex items-center justify-between">
                     {/* Logo and Company Name */}
                     <Link to={`/problems`}>
@@ -69,7 +79,7 @@ export default function Navbar() {
                             Login
                         </button>}
                         {isAuthenticated[0] &&
-                            <Link to='/profile' className='h-12 w-12 rounded-full bg-red-800 flex items-center justify-center mx-2'>
+                            <Link to={`/profile/${base64url.encode(isAuthenticated[1].id)}`} className='h-12 w-12 rounded-full bg-red-800 flex items-center justify-center mx-2'>
                                 {isAuthenticated[1].name !== null ? isAuthenticated[1].name[0] : 'Z'}
                                 { }
                             </Link>

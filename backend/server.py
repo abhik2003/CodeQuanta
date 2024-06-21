@@ -66,7 +66,8 @@ def login():
 @app.route('/user-profile',methods=['POST'])
 def userProfile():
     email=request.json.get('email')
-    value=Auth.profile(email,user)
+    id=request.json.get('id')
+    value=Auth.profile(id,user)
     return jsonify(**value),value.get('code')
 
 

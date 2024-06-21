@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
 import axios from 'axios'
 import Loader from '../Loader/Loader'
-
-export default function QuestionUpdation({ id,updateId }) {
+import CodeMirror from "@uiw/react-codemirror";
+import { cpp } from "@codemirror/lang-cpp";
+import { python } from "@codemirror/lang-python";
+export default function QuestionUpdation({ id, updateId }) {
     console.log(id)
     const [questionStatus, setQuestionStatus] = useState([false])
-    const [loading,setLoading]=useState(true)
+    const [loading, setLoading] = useState(true)
     const [questions, setQuestions] = useState({
         statement: "",
         description: "",
@@ -25,6 +27,13 @@ export default function QuestionUpdation({ id,updateId }) {
         { 'display': 'Python', 'value': 'py' },
 
     ];
+    const [language, setLanguage] = useState("c");
+
+    const languageMap = {
+        cpp: [cpp()],
+        py: [python()],
+        c: [cpp()],
+    };
 
     const handleQuestions = (e) => {
         setQuestions({ ...questions, [e.target.name]: e.target.value })
@@ -82,6 +91,7 @@ export default function QuestionUpdation({ id,updateId }) {
 
             })
             alert('question updated successfully')
+            handleBack()
         }).catch((error) => {
             console.log(error)
             setQuestionStatus([true, error.message])
@@ -121,8 +131,8 @@ export default function QuestionUpdation({ id,updateId }) {
         })
     }
 
-    const handleBack=()=>{
-      updateId(2,0)
+    const handleBack = () => {
+        updateId(2, 0)
     }
 
     useEffect(() => {
@@ -138,10 +148,10 @@ export default function QuestionUpdation({ id,updateId }) {
                 </h1>
             </div>
             <hr />
-            {loading && 
-               <div className="flex justify-center m-2">
-                <Loader size={48}/>
-               </div>
+            {loading &&
+                <div className="flex justify-center m-2">
+                    <Loader size={48} />
+                </div>
             }
             {!loading && <form action="" onSubmit={handleSubmit}>
                 <div className="my-2 sections">
@@ -229,7 +239,21 @@ export default function QuestionUpdation({ id,updateId }) {
                             ))}
                         </select>
                     </div>
-                    <textarea
+                    <div
+                        style={{ overflow: "scroll", height: "40vh" }}
+                        className="rounded shadow "
+                    >
+
+                        <CodeMirror
+                            value={questions.checker_code.code}
+                            extensions={languageMap[language]}
+                            onChange={(value, viewUpdate) => {
+                                setQuestions({ ...questions, checker_code: { 'code': value, 'language': questions.checker_code.language } })
+
+                            }}
+                        />
+                    </div>
+                    {/* <textarea
 
                         name="checker_code"
                         value={questions.checker_code.code}
@@ -239,7 +263,7 @@ export default function QuestionUpdation({ id,updateId }) {
 
                         className=" w-full px-3 py-2 rounded border hover:bg-gray-200 mx-auto md:mx-0 border-blue-100 focus:outline-none focus:text-black"
                         required
-                    />
+                    /> */}
                 </div>
                 <div className="flex py-2 justify-center">
                     <button className="bg-green-500 text-white p-2 rounded">Submit</button>

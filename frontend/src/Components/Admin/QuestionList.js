@@ -27,6 +27,7 @@ export default function QuestionList({updateId}) {
     console.log(lastpage)
 
     useEffect(() => {
+        window.scrollTo(0,0)
         getProblems()
     }, [currentPage])
 
