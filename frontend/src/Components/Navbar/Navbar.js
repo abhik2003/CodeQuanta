@@ -29,8 +29,9 @@ export default function Navbar() {
 
     const handleLogout = () => {
 
+        console.log('login')
         logout()
-        navigate('/login')
+        // navigate('/login')
     }
 
     
@@ -79,7 +80,7 @@ export default function Navbar() {
                             Login
                         </button>}
                         {isAuthenticated[0] &&
-                            <Link to={`/profile/${base64url.encode(isAuthenticated[1].id)}`} className='h-12 w-12 rounded-full bg-red-800 flex items-center justify-center mx-2'>
+                            <Link to={`/profile/${isAuthenticated[1].userName}`} className='h-12 w-12 rounded-full bg-red-800 flex items-center justify-center mx-2'>
                                 {isAuthenticated[1].name !== null ? isAuthenticated[1].name[0] : 'Z'}
                                 { }
                             </Link>

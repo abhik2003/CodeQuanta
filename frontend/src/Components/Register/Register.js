@@ -13,7 +13,8 @@ export default function Register() {
     const [details, setDetails] = useState({
         'email': '',
         'password': '',
-        'name':''
+        'name':'',
+        'userName':''
     })
     const { login, isAuthenticated } = useContext(AuthContext)
     const navigate = useNavigate()
@@ -60,7 +61,8 @@ export default function Register() {
         axios.post(`${url}register`, {
             email: details.email,
             password: details.password,
-            name:details.name
+            name:details.name,
+            userName:details.userName
         }).then((result) => {
             console.log(result.status)
             if (result.status === 200) {
@@ -91,7 +93,7 @@ export default function Register() {
         setPwd(pwd => !pwd)
     }
     return (
-        <div className="w-full h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-white">
+        <div className=" py-16 md:py-0 w-full min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-gray-100 to-white">
             <div className="bg-blue-700 rounded-lg shadow-lg w-3/4 md:w-1/2 xl:w-1/3 max-w-4xl flex flex-col md:flex-row">
                 <div className="w-full bg-white p-4  rounded-lg flex items-center flex-col">
                     {/* <h1 className="text-2xl  mb-6 text-center">Sign Up</h1> */}
@@ -100,6 +102,24 @@ export default function Register() {
 
 
                     <form className="w-full flex flex-col items-center" onSubmit={handleSubmit}>
+
+                    <div className="mb-8 w-full flex pl-4 items-center">
+                            <label className="block text-white mb-2 text-xl" htmlFor="email">
+                                <UserIcon className="h-7 w-7 text-gray-500 inline-block mr-2 " />
+                            </label>
+                            <input
+                                type="text"
+                                name="userName"
+                                value={details.userName}
+                                onChange={handleChange}
+                                placeholder="username"
+                                className="w-3/4 h-12 px-3 py-2 rounded border
+                                hover:bg-gray-200
+                                border-blue-100 focus:outline-none focus:text-black"
+                                required
+                            />
+                        </div>
+
                     <div className="mb-8 w-full flex pl-4 items-center">
                             <label className="block text-white mb-2 text-xl" htmlFor="email">
                                 <UserIcon className="h-7 w-7 text-gray-500 inline-block mr-2 " />
