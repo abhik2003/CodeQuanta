@@ -29,9 +29,9 @@ export default function Navbar() {
 
     const handleLogout = () => {
 
-        console.log('login')
+        console.log('logged out')
         logout()
-        // navigate('/login')
+        navigate('/login')
     }
 
     
@@ -85,7 +85,7 @@ export default function Navbar() {
                                 { }
                             </Link>
                         }
-                        {isAuthenticated[0] && <button className="text-white bg-red-500 hover:bg-green-400 px-4 py-2 rounded" onClick={() => { logout() }}>
+                        {isAuthenticated[0] && <button className="text-white bg-red-500 hover:bg-green-400 px-4 py-2 rounded" onClick={() => { handleLogout() }}>
                             Logout
                         </button>}
                     </div>

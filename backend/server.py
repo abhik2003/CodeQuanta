@@ -10,6 +10,7 @@ import os
 import random
 from CodeJudge import CodeJudge
 from Submissions import Submissions
+from Solutions import Solutions
 from datetime import datetime
 
 
@@ -30,7 +31,7 @@ user = mydb["user"]#collection for storing users
 problems = mydb["problems"]#collection for storing problems
 submissions = mydb["submissions"]#collection for storing submissions
 admins=mydb["admins"]#collection for admins
-
+solutions=mydb["solutions"] #collection for solutions
 
 # Testing purpose
 @app.route('/', methods=['GET'])
@@ -263,7 +264,38 @@ def getAllSubmissionUserProblem():
     except Exception as err:
             return jsonify({'message':str(err)}), 500
 
+ #Check whether user has accepted submission for a particular problem
+@app.route('/check-accepted-user', methods=['POST'])
+def checkAcceptedUser():
+    try:
+        data = request.json
+        return Submissions.checkAcceptedUser(user, data)
+    
+    except Exception as err:
+        return jsonify({'message':str(err)}), 500
+
  
+ 
+#Post solution for a problem
+@app.route('/add-solution', methods=['POST'])
+def submitSolution():
+    try:
+        data = request.json
+        data['timestamp']=datetime.utcnow()
+        return Solutions.submitSolution(solutions, data)
+    except Exception as err:
+        return jsonify({'message':str(err)}), 500
+    
+#Update solution for a problem
+@app.route('/update-solution', methods=['POST'])
+def updateSolution():
+    try:
+        data = request.json
+        return Solutions.updateSolution(solutions, data)
+    except Exception as err:
+        return jsonify({'message':str(err)}), 500
+    
+    
 if __name__ == '__main__':
     app.run(debug=True)
 

@@ -214,3 +214,26 @@ def updateUserSolvedProblem(problem_id, user_id, user, problems):
         pass
     except Exception as err:
         return jsonify({'message':str(err)}), 500
+    
+    
+def checkAcceptedUser(user, data):
+    try:
+        req_fields = ["problem_id", "user_id"]
+        
+        for rf in req_fields:
+            if rf not in data:
+                return jsonify({'message': 'All fields are not passed'}), 400
+            
+        result = user.find_one({
+            "_id": ObjectId(data["user_id"]),
+            "solved": {'$in': [ObjectId(data["problem_id"])]}
+        })
+        
+        if result:
+            return {"ok": True}, 200
+        else:
+            return {"ok": False}, 200
+        
+    except Exception as err:
+        return jsonify({'message':str(err)}), 500
+    
