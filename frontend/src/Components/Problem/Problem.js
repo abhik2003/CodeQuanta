@@ -30,7 +30,7 @@ function Problem() {
   return (
     <>
       {!loaded &&
-        <div className="h-48 flex justify-center items-center">
+        <div className="h-48 justify-center items-center">
           <Loader size={96} />
         </div>
       }
@@ -114,7 +114,7 @@ function Problem() {
                 aria-labelledby="solution-tab"
                 tabindex="0"
               >
-                <ProblemSolution />
+                <ProblemSolution problem_id={problem_id}/>
               </div>
             </div>
           </div>

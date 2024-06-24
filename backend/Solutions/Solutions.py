@@ -2,7 +2,7 @@ from bson.objectid import ObjectId
 from flask import jsonify
 
 def submitSolution(solutions, data):
-    required_fields = ['problem_id', 'user_id', 'solution','timestamp']
+    required_fields = ['problem_id', 'user_id', 'solution', 'title','timestamp']
     
     for rf in required_fields:
         if rf not in data:
@@ -20,7 +20,7 @@ def submitSolution(solutions, data):
     
 
 def updateSolution(solutions, data):
-    required_fields = ['solution_id', 'user_id', 'solution']
+    required_fields = ['solution_id', 'user_id', 'solution', 'title']
     
     for rf in required_fields:
         if rf not in data:
@@ -39,7 +39,8 @@ def updateSolution(solutions, data):
         # Update the solution document
         update_query = {
             '$set': {
-                'solution': data['solution']
+                'solution': data['solution'],
+                'title': data['title']
             }
         }
         

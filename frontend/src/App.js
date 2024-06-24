@@ -7,6 +7,7 @@ import Loader from "./Components/Loader/Loader";
 import AllProblemsList from "./Components/AllProblemsList/AllProblemsList";
 import ProfilePage from "./Components/Profile/ProfilePage";
 import AdminPanel from "./Components/Admin/AdminPanel";
+import PostSolution from "./Components/Solution/PostSolution";
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
  
     <BrowserRouter>
     <Routes>
+      <Route exact path='/' element={<AllProblemsList/>} />
       <Route exact path='/login' element={<Login/>} />
       <Route exact path='/register' element={<Register/>} />
       <Route exact path='/problems' element={<AllProblemsList/>} />
@@ -23,6 +25,7 @@ function App() {
       
       <Route exact path='/compiler' element={<Compiler/>}/>
       <Route exact path='/problem/:id' element={<Problem/>}/>
+      <Route exact path='/post-solution/:id' element={<PostSolution/>}/>
     </Routes>
     </BrowserRouter>
     
