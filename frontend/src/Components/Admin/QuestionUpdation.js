@@ -1,12 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
 import axios from 'axios'
 import Loader from '../Loader/Loader'
 import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
+import JoditEditor from 'jodit-react';
 export default function QuestionUpdation({ id, updateId }) {
     console.log(id)
+    const editor = useRef(null);
+
     const [questionStatus, setQuestionStatus] = useState([false])
     const [loading, setLoading] = useState(true)
     const [questions, setQuestions] = useState({
@@ -57,7 +60,7 @@ export default function QuestionUpdation({ id, updateId }) {
     const handleSubmit = (e) => {
         e.preventDefault()
         console.log(questions)
-
+        
         if (questions.difficulty === '') {
             setQuestionStatus([true, 'Set Question difficulty'])
             return
@@ -182,8 +185,12 @@ export default function QuestionUpdation({ id, updateId }) {
 
                 <div className="my-2 sections py-3">
                     <label className='py-2 text-xl font-bold text-center' htmlFor="description">Description of the question (including the test-cases)</label>
-
-                    <textarea
+                    <JoditEditor
+                      ref={editor}
+                      value={questions.description}
+                      onChange={newContent=>setQuestions({...questions,description:newContent})}
+                    />
+                    {/* <textarea
 
                         name="description"
                         value={questions.description}
@@ -195,7 +202,7 @@ export default function QuestionUpdation({ id, updateId }) {
                                  hover:bg-gray-200 mx-auto md:mx-0
                                  border-blue-100 focus:outline-none focus:text-black"
                         required
-                    />
+                    /> */}
                 </div>
                 <hr />
                 <div className="my-2 sections py-3">
