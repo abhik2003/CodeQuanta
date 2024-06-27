@@ -295,6 +295,21 @@ def updateSolution():
     except Exception as err:
         return jsonify({'message':str(err)}), 500
     
+#get all solutions for a problem
+@app.route('/get-all-solutions', methods=['POST'])
+def getallsols():
+    data=request.json
+    value=Solutions.getAllSolutions(solutions,data)
+    return jsonify(**value),value.get('code')
+
+#get particular solution for a problem
+@app.route('/get-one-solution', methods=['POST'])
+def getonesols():
+    data=request.json
+    value=Solutions.getParticularSolution(solutions,data)
+    return jsonify(**value),value.get('code')
+
+    
     
 if __name__ == '__main__':
     app.run(debug=True)

@@ -42,6 +42,8 @@ export default function Navbar() {
                 navigate('/problems')
 
         }
+        if(loaded)
+            console.log(isAuthenticated[1]?.admin)
         
     }, [location, loaded])
     return (

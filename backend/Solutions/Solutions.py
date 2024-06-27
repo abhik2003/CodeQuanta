@@ -53,3 +53,53 @@ def updateSolution(solutions, data):
         return jsonify({'message': "Solution updated successfully"}), 200
     except Exception as err:
         return jsonify({'message': str(err)}), 500
+
+
+def getAllSolutions(solutions,data):
+
+    pid=data.get('problem_id')
+    obj={'code':200,'message':''}
+    if(pid is None):
+        obj['code']=500
+        obj['message']='Provide problem id'
+        return obj
+    try:
+        probid=ObjectId(pid)
+        sols=list(solutions.find({'problem_id':probid},{'user_id':1,'title':1,'solution':1}))
+        for each in sols:
+            each['user_id']=str(each.get('user_id'))
+            each['id']=str(each.get('_id'))
+            del each['_id']
+        
+        obj['solutions']=sols
+        # print(sols)
+        return obj
+    except Exception as err:
+        obj['code']=500
+        obj['message']=str(err)
+        return obj
+
+
+def getParticularSolution(solutions,data):
+    sid=data.get('solution_id')
+    obj={'code':200,'message':''}
+    if(sid is None):
+        obj['code']=500
+        obj['message']='Provide solution id'
+        return obj
+    try:
+        solid=ObjectId(sid)
+        sols=solutions.find_one({'_id':solid},{'user_id':1,'title':1,'solution':1})
+        sols['id']=str(sols.get('_id'))
+        sols['user_id']=str(sols.get('user_id'))
+
+        del sols['_id']
+        
+        # print(sols)
+        obj['solution']=sols
+        # print(sols)
+        return obj
+    except Exception as err:
+        obj['code']=500
+        obj['message']=str(err)
+        return obj

@@ -1,11 +1,14 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext,useRef, useState } from 'react'
 import { AuthContext } from '../../AuthContextProvider/AuthProvider'
 import axios from 'axios'
 import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
-
+import Editor from './Editor';
+import JoditEditor from 'jodit-react';
 export default function QuestionAddition() {
+    const editor = useRef(null);
+    
     
     const [questionStatus, setQuestionStatus] = useState([false])
     const placeHolder = {
@@ -41,6 +44,7 @@ export default function QuestionAddition() {
     ];
 
     const handleQuestions = (e) => {
+        
         setQuestions({ ...questions, [e.target.name]: e.target.value })
         // console.log(questions)
     }
@@ -62,6 +66,7 @@ export default function QuestionAddition() {
     const handleSubmit = (e) => {
         e.preventDefault()
         console.log(questions)
+        
 
         if (questions.difficulty === '') {
             setQuestionStatus([true, 'Set Question difficulty'])
@@ -155,8 +160,14 @@ export default function QuestionAddition() {
 
                 <div className="my-2 sections py-3">
                     <label className='py-2 text-xl font-bold text-center' htmlFor="description">Description of the question (including the test-cases)</label>
-
-                    <textarea
+                    <JoditEditor
+                      ref={editor}
+                      value={questions.description}
+                      onChange={newContent=>setQuestions({...questions,description:newContent})}
+                      
+                    />
+                    
+                    {/* <textarea
 
                         name="description"
                         value={questions.description}
@@ -168,7 +179,7 @@ export default function QuestionAddition() {
                                  hover:bg-gray-200 mx-auto md:mx-0
                                  border-blue-100 focus:outline-none focus:text-black"
                         required
-                    />
+                    /> */}
                 </div>
                 <hr />
                 <div className="my-2 sections py-3">
@@ -216,13 +227,13 @@ export default function QuestionAddition() {
                         style={{ overflow: "scroll", height: "40vh" }}
                         className="rounded shadow "
                     >
-                        
+
                         <CodeMirror
                             value={questions.checker_code.code}
                             extensions={languageMap[language]}
                             onChange={(value, viewUpdate) => {
                                 setQuestions({ ...questions, checker_code: { 'code': value, 'language': questions.checker_code.language } })
-        
+
                             }}
                         />
                     </div>
