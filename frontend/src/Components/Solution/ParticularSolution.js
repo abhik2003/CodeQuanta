@@ -1,8 +1,11 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import parse from 'html-react-parser';
+import formatTimestamp from '../Problem/formatTimeStamp';
 
-export default function ParticularSolution({solid,handleClick}) {
+
+export default function ParticularSolution({ solid, handleClick }) {
+    
     const [solution,setSolution]=useState(0)
     const url=process.env.REACT_APP_API
     const handleQuestion=async()=>{
@@ -19,15 +22,34 @@ export default function ParticularSolution({solid,handleClick}) {
   return (
     <div>
       <div className="flex my-2">
-        <button className="bg-blue-500 text-white p-2 rounded " onClick={()=>{handleClick(-1)}}>Back</button>
+        <button
+          className="bg-blue-500 text-white p-2 rounded "
+          onClick={() => {
+            handleClick(-1);
+          }}
+        >
+          Back
+        </button>
       </div>
-      <h1 className="text-xl my-2">Solution posted by {solution.userName || 'UserName'}</h1>
+      <h2 className="text-xl font-bold my-2">{solution.title || "Title"}</h2>
+      <p
+        className="text-sm my-2"
+        style={{ fontStyle: "italic", color: "#808080" }}
+      >
+        Posted by{" "}
+        <a
+          href={`/profile/${solution?.userName}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "red" }}
+        >
+          {solution.userName || "UserName"}
+        </a>{" "}
+        On {" " + formatTimestamp(solution?.timestamp)}
+      </p>
       <hr />
-      <p className="text-md font-bold my-2">{solution.title || 'Title'}</p>
-      <div>
-        {parse(solution.solution || 'hello')}
-      </div>
-      
+      <br />
+      <div>{parse(solution.solution || "hello")}</div>
     </div>
-  )
+  );
 }

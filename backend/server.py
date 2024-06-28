@@ -299,14 +299,14 @@ def updateSolution():
 @app.route('/get-all-solutions', methods=['POST'])
 def getallsols():
     data=request.json
-    value=Solutions.getAllSolutions(solutions,data)
+    value=Solutions.getAllSolutions(solutions,data,user)
     return jsonify(**value),value.get('code')
 
 #get particular solution for a problem
 @app.route('/get-one-solution', methods=['POST'])
 def getonesols():
     data=request.json
-    value=Solutions.getParticularSolution(solutions,data)
+    value=Solutions.getParticularSolution(solutions,data,user)
     return jsonify(**value),value.get('code')
 
     

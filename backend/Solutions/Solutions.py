@@ -55,7 +55,7 @@ def updateSolution(solutions, data):
         return jsonify({'message': str(err)}), 500
 
 
-def getAllSolutions(solutions,data):
+def getAllSolutions(solutions,data,user):
 
     pid=data.get('problem_id')
     obj={'code':200,'message':''}
@@ -65,8 +65,10 @@ def getAllSolutions(solutions,data):
         return obj
     try:
         probid=ObjectId(pid)
-        sols=list(solutions.find({'problem_id':probid},{'user_id':1,'title':1,'solution':1}))
+        sols=list(solutions.find({'problem_id':probid},{'user_id':1,'title':1, 'timestamp':1}).sort('timestamp', -1))
         for each in sols:
+            user_ = user.find_one({'_id': each['user_id']}, {'userName': 1})
+            each['userName'] = user_.get('userName')
             each['user_id']=str(each.get('user_id'))
             each['id']=str(each.get('_id'))
             del each['_id']
@@ -80,7 +82,7 @@ def getAllSolutions(solutions,data):
         return obj
 
 
-def getParticularSolution(solutions,data):
+def getParticularSolution(solutions,data, user):
     sid=data.get('solution_id')
     obj={'code':200,'message':''}
     if(sid is None):
@@ -89,7 +91,9 @@ def getParticularSolution(solutions,data):
         return obj
     try:
         solid=ObjectId(sid)
-        sols=solutions.find_one({'_id':solid},{'user_id':1,'title':1,'solution':1})
+        sols=solutions.find_one({'_id':solid},{'user_id':1,'title':1,'solution':1, 'timestamp':1})
+        user_ = user.find_one({'_id': sols['user_id']}, {'userName': 1})
+        sols['userName'] = user_.get('userName')
         sols['id']=str(sols.get('_id'))
         sols['user_id']=str(sols.get('user_id'))
 

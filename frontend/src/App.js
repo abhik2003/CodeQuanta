@@ -8,6 +8,7 @@ import AllProblemsList from "./Components/AllProblemsList/AllProblemsList";
 import ProfilePage from "./Components/Profile/ProfilePage";
 import AdminPanel from "./Components/Admin/AdminPanel";
 import PostSolution from "./Components/Solution/PostSolution";
+import Contest from "./Components/Contest/Contest";
 
 
 function App() {
@@ -23,9 +24,12 @@ function App() {
       <Route exact path='/admin' element={<AdminPanel/>} />
 
       
+      <Route exact path='/contest' element={<Contest/>}/>
       <Route exact path='/compiler' element={<Compiler/>}/>
       <Route exact path='/problem/:id' element={<Problem/>}/>
-      <Route exact path='/post-solution/:id' element={<PostSolution/>}/>
+      <Route exact path='/post-solution/:id' element={<PostSolution />} />
+        
+      
     </Routes>
     </BrowserRouter>
     
